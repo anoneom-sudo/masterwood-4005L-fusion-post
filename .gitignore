@@ -4,3 +4,8 @@
 *.tap
 *.log
 ._*
+
+# Golden MW310 programs used to check the post
+!samples/
+!samples/*.prg
+!samples/*.PRG
