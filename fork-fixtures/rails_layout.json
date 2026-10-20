@@ -1,0 +1,74 @@
+{
+ "doc_lineage": "urn:adsk.wipprod:dm.lineage:LvbHA3nZTaOtIsfOssrRzg",
+ "doc_name": "Mockup Masterwood - rails",
+ "note": "Low-fidelity rails for Fusion Machine Sim. Edit rail_x_machine (ventose.prm frame, mm, taken as the rail's X- edge [G]) or sim_x0, then rerun build_rails.py. Sim frame: Z0 = pod top = panel bottom = table attach point.",
+ "sim_x0": -407.5,
+ "sim_x0_note": "sim X = machine X + sim_x0. -407.5 centres the packed field 1 (105..710) on the sim origin, where the setup puts the stock.",
+ "sim_y_note": "FRONT (operator, I stops) = sim -Y = Autodesk-logo side of the gantry (black lettering on the X gantry at Y~-1078). simY = 650 - M: rail back/park end M0 -> +650, front end M1300 -> -650, I-stop face M1217 -> -567, stop 2 M458 -> +192. Fusion setup +Y = toward park (WCS origin 'top 1' = front-left corner = against I stop); post maps mill Y = #911 - y, mill/machine V increases toward the operator. Fixed 2026-10-19 15:00 (v3 had it backwards).",
+ "rail": {
+  "width": 115,
+  "length": 1300,
+  "top_z": -100,
+  "depth": 90
+ },
+ "rail_x_machine": {
+  "1": 105,
+  "2": 243,
+  "3": 418,
+  "4": 595,
+  "5": 2705,
+  "6": 2883,
+  "7": 3058,
+  "8": 3196
+ },
+ "rail_x_note": "rail_x_machine = as-modelled position (ventose.prm X min). Travel limits: see x_travel_min_max (ventose ranges kept in rail_map for reference; ventose max = crossover point, belief).",
+ "stops_M": {
+  "S2_EF": 458,
+  "S1_IJ_face": 1217
+ },
+ "stops_note": "reference sketch points only (no bodies), at each rail centre; X stops not placed (position unknown)",
+ "todo": [
+  "panel lifts on rails 2-4 / 5-7 (size unknown)",
+  "X stops (position unknown)",
+  "pods = fixtures per setup (boxes), not machine parts"
+ ],
+ "rail_depth_note": "placeholder; 90 keeps the rail bottom (Z-190) 1.4 mm above the mockup Static base top (Z-191.4), else static-vs-table collides permanently",
+ "sim_y_of_M0": 650,
+ "sim_y_dir": -1,
+ "save_note": "rails flipped: I-stop/front end at sim -Y (logo side), stop 2 toward +Y (back); depth 90",
+ "x_travel_min_max": {
+  "1": [
+   105,
+   2215
+  ],
+  "2": [
+   243,
+   2350
+  ],
+  "3": [
+   418,
+   2525
+  ],
+  "4": [
+   595,
+   2700
+  ],
+  "5": [
+   2450,
+   4615
+  ],
+  "6": [
+   2628,
+   4790
+  ],
+  "7": [
+   2803,
+   4965
+  ],
+  "8": [
+   2941,
+   5105
+  ]
+ },
+ "x_travel_note": "X travel (rail X- edge, machine X). Field 1: rail 4 max 2700 = MEASURED (Johannes moved rail 4 there physically, 2026-10-19 15:37; real travel >= 2700); rails 3/2/1 max = 2700 minus stacked min edge spacing 175/175/135 -> 2525/2350/2215 (derived). ventose.prm X max (1950/2090/2270/2445) is believed to be the CROSSOVER point between the two table halves, not end of travel. Field 2: ASSUMPTION, mirrored: mins lowered by the same 255 mm (2705->2450, 2883->2628, 3058->2803, 3196->2941), maxes = ventose.prm; real field-2 limits unconfirmed. The fields OVERLAP in the crossover zone (~2450..2815): rails of different fields must not collide - manual responsibility, like no-passing within a field."
+}

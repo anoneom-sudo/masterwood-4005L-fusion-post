@@ -1,0 +1,646 @@
+{
+  "data": [
+    {
+      "BMC": "unspecified",
+      "GRADE": "Mill Generic",
+      "description": "C01 nr14 diamantfrees 23x20mm  [RH]  Ø18 mm  stickout 137.65 mm",
+      "expressions": {
+        "tool_number": "1"
+      },
+      "geometry": {
+        "CSP": false,
+        "DC": 18,
+        "HAND": true,
+        "LB": 137.65,
+        "LCF": 20,
+        "NOF": 2,
+        "OAL": 137.65,
+        "SFDM": 18,
+        "assemblyGaugeLength": 137.65,
+        "shoulder-diameter": 18,
+        "shoulder-length": 22
+      },
+      "guid": "013af093-c671-4125-b9df-666019698184",
+      "last_modified": 1789041360704,
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C1 (line 51) = 41/1: length 137.65 mm, diameter 18.0 mm, working depth 5.0 mm, working speed 7.0 m/min, entry speed 1.0 m/min, max rpm 20000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 1,
+        "length-offset": 1,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 1,
+        "turret": 0
+      },
+      "product-id": "nr14",
+      "product-link": "",
+      "reference_guid": "013af093-c671-4125-b9df-666019698184",
+      "start-values": {
+        "presets": [
+          {
+            "f_n": 0.35,
+            "f_z": 0.175,
+            "guid": "6ba44778-f600-4640-a1e5-58a5930a4046",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 20000,
+            "n_ramp": 20000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "ramp-angle": 2,
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 1130.9733552923256,
+            "v_f": 7000.0,
+            "v_f_leadIn": 7000.0,
+            "v_f_leadOut": 7000.0,
+            "v_f_plunge": 1000.0,
+            "v_f_ramp": 1000.0,
+            "v_f_transition": 7000.0,
+            "description": "TAB01.DAT line 51: max rpm 20000, working 7.0 m/min, entry 1.0 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "hss",
+      "GRADE": "Drill Generic",
+      "description": "C02 nr11 spiraalboor 10mm  [RH]  Ø10 mm  stickout 186.1 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 10,
+        "HAND": true,
+        "LB": 186.1,
+        "LCF": 30,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 186.1,
+        "SFDM": 10,
+        "SIG": 118,
+        "assemblyGaugeLength": 186.1,
+        "shoulder-length": 30,
+        "tip-diameter": 0,
+        "tip-length": 0,
+        "tip-offset": 0
+      },
+      "guid": "5c6368ba-3602-4445-a387-70a416a5d381",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C2 (line 52) = 41/2: length 186.1 mm, diameter 10.0 mm, working depth 80.0 mm, working speed 1.0 m/min, entry speed 1.0 m/min, max rpm 1000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 2,
+        "length-offset": 2,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 2,
+        "turret": 0
+      },
+      "product-id": "nr11",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "b6ea863b-ef80-4531-a91a-d028345953ce",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 1000,
+            "n_ramp": 1000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 31.41592653589793,
+            "v_f": 1000.0,
+            "v_f_leadIn": 1000.0,
+            "v_f_leadOut": 1000.0,
+            "v_f_plunge": 1000.0,
+            "v_f_ramp": 1000.0,
+            "v_f_transition": 1000.0,
+            "description": "TAB01.DAT line 52: max rpm 1000, working 1.0 m/min, entry 1.0 m/min"
+          }
+        ]
+      },
+      "type": "drill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "unspecified",
+      "GRADE": "Mill Generic",
+      "description": "C03 nr03 R Wegwerpfrees 55 x 20mm  [RH]  Ø20.32 mm  stickout 140.65 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 20.32,
+        "HAND": true,
+        "LB": 140.65,
+        "LCF": 55,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 140.65,
+        "RE": 0,
+        "SFDM": 20.32,
+        "TA": 0,
+        "TP": 0,
+        "assemblyGaugeLength": 140.65,
+        "shoulder-diameter": 20.32,
+        "shoulder-length": 57
+      },
+      "guid": "db835d6c-9775-4a91-b3c3-75c414de5e7f",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C3 (line 53) = 41/3: length 140.65 mm, diameter 20.32 mm, working depth 3.0 mm, working speed 7.0 m/min, entry speed 2.0 m/min, max rpm 18000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 3,
+        "length-offset": 3,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 3,
+        "turret": 0
+      },
+      "product-id": "nr3",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "0403d2d5-d886-4231-b061-36e84df4fde9",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 18000,
+            "n_ramp": 18000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 1149.0689289770028,
+            "v_f": 7000.0,
+            "v_f_leadIn": 7000.0,
+            "v_f_leadOut": 7000.0,
+            "v_f_plunge": 2000.0,
+            "v_f_ramp": 2000.0,
+            "v_f_transition": 7000.0,
+            "description": "TAB01.DAT line 53: max rpm 18000, working 7.0 m/min, entry 2.0 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "unspecified",
+      "GRADE": "Mill Generic",
+      "description": "C04 nr07 R Langsgatfrees 110 x 16mm  [RH]  Ø16 mm  stickout 190 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 16,
+        "HAND": true,
+        "LB": 190,
+        "LCF": 110,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 190,
+        "RE": 0,
+        "SFDM": 16,
+        "TA": 0,
+        "TP": 0,
+        "assemblyGaugeLength": 190,
+        "shoulder-diameter": 16,
+        "shoulder-length": 112
+      },
+      "guid": "0fa2a44c-e8aa-4fea-b1cd-b431f97b3cf5",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C4 (line 54) = 41/4: length 190.0 mm, diameter 16.0 mm, working depth 3.5 mm, working speed 3.0 m/min, entry speed 0.4 m/min, max rpm 18000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 4,
+        "length-offset": 4,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 4,
+        "turret": 0
+      },
+      "product-id": "nr7",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "cdd7aaa9-8993-4ae1-856a-fe4b3bb1766d",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 18000,
+            "n_ramp": 18000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 904.7786842338604,
+            "v_f": 3000.0,
+            "v_f_leadIn": 3000.0,
+            "v_f_leadOut": 3000.0,
+            "v_f_plunge": 400.0,
+            "v_f_ramp": 400.0,
+            "v_f_transition": 3000.0,
+            "description": "TAB01.DAT line 54: max rpm 18000, working 3.0 m/min, entry 0.4 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "unspecified",
+      "GRADE": "Mill Generic",
+      "description": "C05 nr011 NO HAfrees 44mm  [RH]  Ø44 mm  stickout 114.1 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 44,
+        "HAND": true,
+        "LB": 114.1,
+        "LCF": 44,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 114.1,
+        "RE": 0,
+        "SFDM": 44,
+        "TA": 0,
+        "TP": 0,
+        "assemblyGaugeLength": 114.1,
+        "shoulder-diameter": 44,
+        "shoulder-length": 46
+      },
+      "guid": "1f9ec920-10ae-40d4-8002-3f82ef196a62",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C5 (line 55) = 41/5: length 114.1 mm, diameter 44.0 mm, working depth 12.0 mm, working speed 2.0 m/min, entry speed 0.5 m/min, max rpm 12000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 5,
+        "length-offset": 5,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 5,
+        "turret": 0
+      },
+      "product-id": "nr11",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "5ee19cad-126c-4bce-b208-07f84e6b6f99",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 12000,
+            "n_ramp": 12000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 1658.7609210954106,
+            "v_f": 2000.0,
+            "v_f_leadIn": 2000.0,
+            "v_f_leadOut": 2000.0,
+            "v_f_plunge": 500.0,
+            "v_f_ramp": 500.0,
+            "v_f_transition": 2000.0,
+            "description": "TAB01.DAT line 55: max rpm 12000, working 2.0 m/min, entry 0.5 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "unspecified",
+      "GRADE": "Mill Generic",
+      "description": "C06 nr06 zaag als frees 180mm  [RH]  Ø177.87 mm  stickout 140.51 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 177.87,
+        "HAND": true,
+        "LB": 140.51,
+        "LCF": 10,
+        "NOF": 24,
+        "NT": 1,
+        "OAL": 140.51,
+        "RE": 0,
+        "SFDM": 20,
+        "assemblyGaugeLength": 140.51,
+        "shoulder-diameter": 177.87,
+        "shoulder-length": 10
+      },
+      "guid": "96b4e6fc-45a4-40bb-b417-3b89e64d14a2",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C6 (line 56) = 41/6: length 140.51 mm, diameter 177.87 mm, working depth 0.0 mm, working speed 12.0 m/min, entry speed 2.0 m/min, max rpm 10000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 6,
+        "length-offset": 6,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 6,
+        "turret": 0
+      },
+      "product-id": "nr6",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "7cca59ef-99ed-4b3c-93e9-3ce8385a7174",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 10000,
+            "n_ramp": 10000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 5587.9508529401655,
+            "v_f": 12000.0,
+            "v_f_leadIn": 12000.0,
+            "v_f_leadOut": 12000.0,
+            "v_f_plunge": 2000.0,
+            "v_f_ramp": 2000.0,
+            "v_f_transition": 12000.0,
+            "description": "TAB01.DAT line 56: max rpm 10000, working 12.0 m/min, entry 2.0 m/min"
+          }
+        ]
+      },
+      "type": "slot mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "unspecified",
+      "GRADE": "Mill Generic",
+      "description": "C07 nr09 diamantfrees 80 x 26mm  [RH]  Ø76 mm  stickout 100 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 76,
+        "HAND": true,
+        "LB": 100,
+        "LCF": 26,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 100,
+        "RE": 0,
+        "SFDM": 76,
+        "TA": 0,
+        "TP": 0,
+        "assemblyGaugeLength": 100,
+        "shoulder-diameter": 76,
+        "shoulder-length": 28
+      },
+      "guid": "23755df2-0442-4f6c-aba5-a8f752235b06",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C7 (line 57) = 41/7: length 100.0 mm, diameter 76.0 mm, working depth 26.0 mm, working speed 5.0 m/min, entry speed 2.0 m/min, max rpm 9000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 7,
+        "length-offset": 7,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 7,
+        "turret": 0
+      },
+      "product-id": "nr9",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "5b091d0f-0fb7-4e26-bf3d-62ba8c3c378e",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 9000,
+            "n_ramp": 9000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 2148.8493750554185,
+            "v_f": 5000.0,
+            "v_f_leadIn": 5000.0,
+            "v_f_leadOut": 5000.0,
+            "v_f_plunge": 2000.0,
+            "v_f_ramp": 2000.0,
+            "v_f_transition": 5000.0,
+            "description": "TAB01.DAT line 57: max rpm 9000, working 5.0 m/min, entry 2.0 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "carbide",
+      "GRADE": "Mill Generic",
+      "description": "C08 nr06 R Fijnfrees massuef 18 X 75  [RH]  Ø15.9 mm  stickout 170.2 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 15.9,
+        "HAND": true,
+        "LB": 170.2,
+        "LCF": 75,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 170.2,
+        "RE": 0,
+        "SFDM": 15.9,
+        "TA": 0,
+        "TP": 0,
+        "assemblyGaugeLength": 170.2,
+        "shoulder-diameter": 15.9,
+        "shoulder-length": 77
+      },
+      "guid": "ecd5e593-ac87-4201-8e11-1b0a76c7e3ab",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C8 (line 58) = 41/8: length 170.2 mm, diameter 15.9 mm, working depth 5.0 mm, working speed 5.0 m/min, entry speed 2.0 m/min, max rpm 18000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 8,
+        "length-offset": 8,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 8,
+        "turret": 0
+      },
+      "product-id": "nr6",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "eb0d524f-18f4-4d4a-b16e-9f95178e6151",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 18000,
+            "n_ramp": 18000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 899.1238174573988,
+            "v_f": 5000.0,
+            "v_f_leadIn": 5000.0,
+            "v_f_leadOut": 5000.0,
+            "v_f_plunge": 2000.0,
+            "v_f_ramp": 2000.0,
+            "v_f_transition": 5000.0,
+            "description": "TAB01.DAT line 58: max rpm 18000, working 5.0 m/min, entry 2.0 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "unspecified",
+      "GRADE": "Mill Generic",
+      "description": "C09 nr04 L Wegwerpfrees 55 x 20mm  [LH]  Ø20.28 mm  stickout 140.95 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 20.28,
+        "HAND": false,
+        "LB": 140.95,
+        "LCF": 55,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 140.95,
+        "RE": 0,
+        "SFDM": 20.28,
+        "TA": 0,
+        "TP": 0,
+        "assemblyGaugeLength": 140.95,
+        "shoulder-diameter": 20.28,
+        "shoulder-length": 57
+      },
+      "guid": "a65dc5c8-b307-4f8b-ad19-7e012983e2bc",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C9 (line 59) = 41/9: length 140.95 mm, diameter 20.28 mm, working depth 3.0 mm, working speed 7.0 m/min, entry speed 2.0 m/min, max rpm 18000, rotation L. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 9,
+        "length-offset": 9,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 9,
+        "turret": 0
+      },
+      "product-id": "nr4",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "f71296df-59ee-41e9-86ef-442733d0019c",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 18000,
+            "n_ramp": 18000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 1146.8069822664181,
+            "v_f": 7000.0,
+            "v_f_leadIn": 7000.0,
+            "v_f_leadOut": 7000.0,
+            "v_f_plunge": 2000.0,
+            "v_f_ramp": 2000.0,
+            "v_f_transition": 7000.0,
+            "description": "TAB01.DAT line 59: max rpm 18000, working 7.0 m/min, entry 2.0 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    },
+    {
+      "BMC": "carbide",
+      "GRADE": "Mill Generic",
+      "description": "C10 nr10 R Rechte frees 20 x 8mm  [RH]  Ø7.7 mm  stickout 117 mm",
+      "geometry": {
+        "CSP": false,
+        "DC": 7.7,
+        "HAND": true,
+        "LB": 117,
+        "LCF": 20,
+        "NOF": 2,
+        "NT": 1,
+        "OAL": 117,
+        "RE": 0,
+        "SFDM": 7.7,
+        "TA": 0,
+        "TP": 0,
+        "assemblyGaugeLength": 117,
+        "shoulder-diameter": 7.7,
+        "shoulder-length": 22
+      },
+      "guid": "4d9801a4-0687-4aac-b830-62361a70977c",
+      "post-process": {
+        "break-control": false,
+        "comment": "MW310 TAB01.DAT C10 (line 60) = 41/10: length 117.0 mm, diameter 7.7 mm, working depth 6.0 mm, working speed 3.0 m/min, entry speed 2.0 m/min, max rpm 20000, rotation R. Columns decoded via MW310 tool editor field order (.utn) and Test.PRG S20 E2 F3.",
+        "diameter-offset": 10,
+        "length-offset": 10,
+        "live": true,
+        "manual-tool-change": false,
+        "number": 10,
+        "turret": 0
+      },
+      "product-id": "nr10",
+      "product-link": "",
+      "start-values": {
+        "presets": [
+          {
+            "guid": "345d1ca6-d9ed-4227-aff2-498581deab7a",
+            "material": {
+              "category": "all",
+              "query": "",
+              "use-hardness": false
+            },
+            "n": 20000,
+            "n_ramp": 20000,
+            "name": "Masterwood TAB01 standard (MW310)",
+            "tool-coolant": "disabled",
+            "use-stepdown": false,
+            "use-stepover": false,
+            "v_c": 483.8052686528282,
+            "v_f": 3000.0,
+            "v_f_leadIn": 3000.0,
+            "v_f_leadOut": 3000.0,
+            "v_f_plunge": 2000.0,
+            "v_f_ramp": 2000.0,
+            "v_f_transition": 3000.0,
+            "description": "TAB01.DAT line 60: max rpm 20000, working 3.0 m/min, entry 2.0 m/min"
+          }
+        ]
+      },
+      "type": "flat end mill",
+      "unit": "millimeters",
+      "vendor": "Masterwood"
+    }
+  ]
+}

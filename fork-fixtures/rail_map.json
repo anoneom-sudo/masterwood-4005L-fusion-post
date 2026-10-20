@@ -1,0 +1,275 @@
+{
+ "frame": "M = mm on the rail's own side scale (cm/inch), 0 at the back (park) rail end; V_machine ~= 679 + M (guess); D_from_front_end = 1306 - M",
+ "status": "estimate from photos 2026-10-19, +-3..8 mm",
+ "rail": {
+  "width": 115,
+  "length": 1300,
+  "length_measured": 1306
+ },
+ "ports": [
+  {
+   "id": "P1",
+   "M": 84
+  },
+  {
+   "id": "P2",
+   "M": 231
+  },
+  {
+   "id": "P3",
+   "M": 385
+  },
+  {
+   "id": "P4",
+   "M": 535
+  },
+  {
+   "id": "P5",
+   "M": 679
+  },
+  {
+   "id": "P6",
+   "M": 834
+  },
+  {
+   "id": "P7",
+   "M": 981
+  },
+  {
+   "id": "P8",
+   "M": 1133
+  },
+  {
+   "id": "P9",
+   "M": 1177,
+   "note": "extra pair, 44 mm from P8, off-pitch"
+  }
+ ],
+ "port_pattern": "M = 84 + 150*k, k=0..7, plus P9",
+ "port_rows_across": {
+  "from_far_edge_mm": [
+   39,
+   67
+  ],
+  "ring_od": 17,
+  "note": "pair straight across the rail; far edge = edge away from the camera, side unknown"
+ },
+ "stops": [
+  {
+   "id": "S2_back",
+   "M": 458,
+   "bat": "E/F 1139.32"
+  },
+  {
+   "id": "S1_front",
+   "M": 1227,
+   "bat": "I/J 1889.20 (=> M 1210?)",
+   "uncertain": true
+  }
+ ],
+ "stops_are_collision": false,
+ "pods": {
+  "base_bottom_plate": [
+   140,
+   115
+  ],
+  "rot_allowed": [
+   0,
+   180
+  ],
+  "types": [
+   {
+    "name": "VCBL-K2 140x115x100",
+    "art": "10.01.12.00445",
+    "top_along": 140,
+    "top_across": 115,
+    "H": 100,
+    "H2": 74.8,
+    "L1": 166,
+    "L2": 26,
+    "top_offset_from_port": 0,
+    "count": 4
+   },
+   {
+    "name": "VCBL-K2 125x75x100 Q",
+    "art": "10.01.12.00447",
+    "top_along": 75,
+    "top_across": 125,
+    "H": 100,
+    "H2": 63,
+    "L1": 145,
+    "L2": 67.8,
+    "top_offset_from_port": 30,
+    "offset_status": "guess",
+    "count": 4
+   },
+   {
+    "name": "VCBL-K2 120x50x100 Q",
+    "art": "10.01.12.00126",
+    "top_along": 50,
+    "top_across": 120,
+    "H": 100,
+    "H2": 63,
+    "L1": 145,
+    "L2": 67.8,
+    "top_offset_from_port": 18,
+    "offset_status": "guess",
+    "count": 4
+   },
+   {
+    "name": "VCBL-K2 125x75x100 L (likely 4th)",
+    "art": "10.01.12.00506",
+    "top_along": 125,
+    "top_across": 75,
+    "H": 100,
+    "H2": 63,
+    "L1": 145,
+    "L2": 20.5,
+    "top_offset_from_port": 8,
+    "offset_status": "guess",
+    "type_status": "guess",
+    "count": 2
+   }
+  ],
+  "inventory": {
+   "total": 14,
+   "source": "Johannes 2026-10-19",
+   "by_art": {
+    "10.01.12.00445": 4,
+    "10.01.12.00447": 4,
+    "10.01.12.00126": 4,
+    "10.01.12.00506": 2
+   },
+   "note": "00506 article number is a guess (label bleached); type = 125x75 with top turned 90 deg (L)"
+  }
+ },
+ "z_model": {
+  "pod_top_Z": 0,
+  "rail_top_Z": -100,
+  "panel_bottom_Z": 0,
+  "machine_bed": null,
+  "note": "no bed: rails are the bed; programs treat pod top as Z0. Y stops pop ~10 above pod top but retract before the program (reference only)."
+ },
+ "rails_layout": {
+  "count": 8,
+  "fields": 2,
+  "per_field": 4,
+  "edge_spacing_min": {
+   "1-2": 135,
+   "2-3": 175,
+   "3-4": 175
+  },
+  "spacing_note": "same-side edge to edge; field 2 mirrored (7-8 = 138 in ventose.prm)",
+  "lifts": "rails 2-4 (field 1); 5-7 assumed mirrored",
+  "ventose_x_min_max": {
+   "1": [
+    105,
+    1950
+   ],
+   "2": [
+    243,
+    2090
+   ],
+   "3": [
+    418,
+    2270
+   ],
+   "4": [
+    595,
+    2445
+   ],
+   "5": [
+    2705,
+    4615
+   ],
+   "6": [
+    2883,
+    4790
+   ],
+   "7": [
+    3058,
+    4965
+   ],
+   "8": [
+    3196,
+    5105
+   ]
+  },
+  "x_travel_min_max": {
+   "1": [
+    105,
+    2215
+   ],
+   "2": [
+    243,
+    2350
+   ],
+   "3": [
+    418,
+    2525
+   ],
+   "4": [
+    595,
+    2700
+   ],
+   "5": [
+    2450,
+    4615
+   ],
+   "6": [
+    2628,
+    4790
+   ],
+   "7": [
+    2803,
+    4965
+   ],
+   "8": [
+    2941,
+    5105
+   ]
+  },
+  "x_travel_note": "X travel (rail X- edge, machine X). Field 1: rail 4 max 2700 = MEASURED (Johannes moved rail 4 there physically, 2026-10-19 15:37; real travel >= 2700); rails 3/2/1 max = 2700 minus stacked min edge spacing 175/175/135 -> 2525/2350/2215 (derived). ventose.prm X max (1950/2090/2270/2445) is believed to be the CROSSOVER point between the two table halves, not end of travel. Field 2: ASSUMPTION, mirrored: mins lowered by the same 255 mm (2705->2450, 2883->2628, 3058->2803, 3196->2941), maxes = ventose.prm; real field-2 limits unconfirmed. The fields OVERLAP in the crossover zone (~2450..2815): rails of different fields must not collide - manual responsibility, like no-passing within a field.",
+  "ventose_x_max_meaning": "belief (Johannes 15:37): crossover point between table halves, not end of travel"
+ },
+ "port_pattern_role": "HARD constraint: pod must sit above a vacuum port (Johannes 14:41). Ports intended to allow almost any Y; 9 positions per rail looks sparse -> open question",
+ "pod_y_placement": {
+  "mode": "port_window",
+  "alt_mode": "snap_to_port_centre",
+  "window_rule": "a port ring (OD 17) lies fully under the pod bottom-plate suction area, seal margin ~5 mm: base start Y in [M_port+8.5+5-140, M_port-8.5-5] (~110 mm window per port), guess",
+  "coverage_estimate": "~73% of rail length on 150 grid, ~40 mm dead bands",
+  "grid_step_for_search": 5,
+  "hard_constraints": [
+   "port under pod suction area (window rule)",
+   "no overlap/contact of pod bases (incl. lug L1) with neighbours on the same rail, min gap 2 mm (default)",
+   "base within rail Y range (ventose.prm 45..1255, guess)"
+  ],
+  "caution_zones_for_pod_base": [
+   {
+    "id": "S2",
+    "M": [
+     425,
+     490
+    ],
+    "note": "stop plate 2 + margin"
+   },
+   {
+    "id": "S1_Istop_end",
+    "M": [
+     1190,
+     1306
+    ],
+    "note": "stop plate 1 + I stop + front end"
+   }
+  ],
+  "caution_mode": "keep-out by default, penalty if override",
+  "open": [
+   "are there more ports than the 9 seen?",
+   "ring anywhere under bottom plate vs centred",
+   "rings of a pair usable separately?",
+   "inlet position on pod bottom",
+   "stop keep-out extent"
+  ],
+  "status": "window/zone sizes estimate, to confirm"
+ }
+}

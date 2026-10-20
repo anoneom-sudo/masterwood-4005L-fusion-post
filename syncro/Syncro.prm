@@ -1,0 +1,591 @@
+#590
+| PARAMETRI ASSE U
+"Q.MUL       " 199976
+"Q.DIV       " 99996
+"FCSW min    " -1500
+"FCSW max    " 602150
+"Q.TARAT     " 2940
+"TOLL.POS    " 50
+"JOG acc     " 5
+"VTAR rap    " 100
+"VTAR len    " 40
+"MANT ctl    " 1
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 1
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 1
+"LAG max     " 3000
+"VEL max     " 60000
+"ACC max     " 2000
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 40
+"T_ABILAZ    " 100
+"EP_RAS      " 300
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE V
+"Q.MUL       " 4
+"Q.DIV       " 5
+"FCSW min    " -600
+"FCSW max    " 201800
+"Q.TARAT     " 6010
+"TOLL.POS    " 10
+"JOG acc     " 10
+"VTAR rap    " 150
+"VTAR len    " 40
+"MANT ctl    " 1
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 1
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 1
+"LAG max     " 2500
+"VEL max     " 48000
+"ACC max     " 2500
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 40
+"T_ABILAZ    " 100
+"EP_RAS      " 150
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE W
+"Q.MUL       " 2
+"Q.DIV       " 5
+"FCSW min    " -100
+"FCSW max    " 61600
+"Q.TARAT     " 1530
+"TOLL.POS    " 10
+"JOG acc     " 10
+"VTAR rap    " 100
+"VTAR len    " 10
+"MANT ctl    " 1
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 1
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 1
+"LAG max     " 1100
+"VEL max     " 19200
+"ACC max     " 2000
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 40
+"T_ABILAZ    " 100
+"EP_RAS      " 100
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE D
+"Q.MUL       " 199976
+"Q.DIV       " 99996
+"FCSW min    " -1500
+"FCSW max    " 602150
+"Q.TARAT     " 4369
+"TOLL.POS    " 50
+"JOG acc     " 5
+"VTAR rap    " 100
+"VTAR len    " 40
+"MANT ctl    " 1
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 1
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 1
+"LAG max     " 3000
+"VEL max     " 60000
+"ACC max     " 2000
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 40
+"T_ABILAZ    " 100
+"EP_RAS      " 300
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE C
+"Q.MUL       " 9
+"Q.DIV       " 121
+"FCSW min    " -14000
+"FCSW max    " 28680
+"Q.TARAT     " -13910
+"TOLL.POS    " 10
+"JOG acc     " 20
+"VTAR rap    " 100
+"VTAR len    " 30
+"MANT ctl    " 1
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 1
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 1
+"LAG max     " 4000
+"VEL max     " 5000
+"ACC max     " 400
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 40
+"T_ABILAZ    " 50
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE A
+"Q.MUL       " 9
+"Q.DIV       " 121
+"FCSW min    " -3860
+"FCSW max    " 21140
+"Q.TARAT     " -3219
+"TOLL.POS    " 10
+"JOG acc     " 20
+"VTAR rap    " 100
+"VTAR len    " 30
+"MANT ctl    " 1
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 1
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 1
+"LAG max     " 4000
+"VEL max     " 4500
+"ACC max     " 400
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 20
+"T_ABILAZ    " 50
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE S
+"Q.MUL       " 1
+"Q.DIV       " 1
+"FCSW min    " -999999
+"FCSW max    " 999999
+"Q.TARAT     " 100
+"TOLL.POS    " 100
+"JOG acc     " 6000
+"VTAR rap    " 100
+"VTAR len    " 10
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 200
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 1
+"LAG max     " 10000
+"VEL max     " 50000
+"ACC max     " 10000
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 2000
+"T_ABILAZ    " 100
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PARAMETRI ASSE 0
+"Q.MUL       " 0
+"Q.DIV       " 0
+"FCSW min    " 0
+"FCSW max    " 0
+"Q.TARAT     " 0
+"TOLL.POS    " 0
+"JOG acc     " 0
+"VTAR rap    " 0
+"VTAR len    " 0
+"MANT ctl    " 0
+"COMP ctl    " 0
+"TIME Comp   " 0
+"MAX Comp    " 0
+"KEP         " 0
+"KVC         " 0
+"KAC         " 0
+"KDC         " 0
+"LAG ctl     " 0
+"LAG max     " 0
+"VEL max     " 0
+"ACC max     " 0
+"KVINT       " 0
+"KAINT       " 0
+"KDINT       " 0
+"KVRIN       " 0
+"DECEMG      " 0
+"T_ABILAZ    " 0
+"EP_RAS      " 0
+"KEP0        " 0
+"VSDKEP      " 0
+"Max DACC    " 0
+| PAR. INTERPOLAZIONE 1
+"AX0_INT     " 1
+"MLAGINTctl  " 1
+"MLAG_INT    " 1000
+"MLAG_TNG    " 1000
+"VEL_INT     " 20000
+"ACC_INT     " 200
+"ARMAX       " 15000
+"FEEDIN0     " 10000
+"TOLLER      " 10
+"EN_OVER     " 1
+"DRSTINT     " 300
+"DV_RACC     " 200
+"VEL_TNG     " 0
+"DV_TANG     " 0
+"EPRASIN     " 0
+| PARAMETRI GENERALI 1
+"EN_TEMP     " 1
+"FRESTE      " 0
+"AX1_TRC     " 1
+"AX2_TRC     " 2
+"NSTMEM      " 400
+"EN_RISP     " 0
+"IN_TRC      " 1
+"OUT_TRC     " 1
+"TO_BLOEP    " 6000
+"TO_POSOK    " 6000
+| INGRESSI REMOTATI
+"I_REM_01    " 100
+"I_REM_02    " 100
+"I_REM_03    " 100
+"I_REM_04    " 100
+"I_REM_05    " 100
+"I_REM_06    " 100
+"I_REM_07    " 100
+"I_REM_08    " 2
+"I_REM_09    " 2
+"I_REM_10    " 2
+"I_REM_11    " 2
+"I_REM_12    " 4
+"I_REM_13    " 4
+"I_REM_14    " 6
+"I_REM_15    " 6
+"I_REM_16    " 0
+"I_REM_17    " 0
+"I_REM_18    " 0
+"I_REM_19    " 0
+"I_REM_20    " 0
+"I_REM_21    " 0
+"I_REM_22    " 0
+"I_REM_23    " 0
+"I_REM_24    " 0
+| USCITE REMOTATE 
+"O_REM_01    " 100
+"O_REM_02    " 100
+"O_REM_03    " 3
+"O_REM_04    " 3
+"O_REM_05    " 3
+"O_REM_06    " 3
+"O_REM_07    " 4
+"O_REM_08    " 6
+"O_REM_09    " 6
+"O_REM_10    " 0
+"O_REM_11    " 0
+"O_REM_12    " 0
+"O_REM_13    " 0
+"O_REM_14    " 0
+"O_REM_15    " 0
+"O_REM_16    " 0
+"O_REM_17    " 0
+"O_REM_18    " 0
+"O_REM_19    " 0
+"O_REM_20    " 0
+"O_REM_21    " 0
+"O_REM_22    " 0
+"O_REM_23    " 0
+"O_REM_24    " 0
+|

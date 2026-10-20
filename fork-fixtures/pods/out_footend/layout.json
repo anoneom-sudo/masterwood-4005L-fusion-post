@@ -1,0 +1,162 @@
+{
+ "doc": "ZZ throwaway - foot end rails test",
+ "setup": "Foot end - machined face up",
+ "placement_mode": "istop",
+ "wcs_to_sim_offset": [
+  269.2245,
+  567,
+  -39
+ ],
+ "frames": "WCS = Fusion setup WCS (mm, Z+ up, origin stock top-left-front corner 'top 1').\n         sim = machine-sim table frame: Z0 = pod top = panel bottom; front (operator, I stops) = sim -Y (logo side).\n         rail scale M (mm) = 650 - simY  (M0 = back/park end, I-stop face M1217, front end ~M1300..1306).\n         sim X = machine(ventose) X - 407.5 ; rail X in ventose.prm taken as the rail's X- edge [guess].",
+ "clearance": 5.0,
+ "through_clearance": 20.0,
+ "seal_margin": 0.0,
+ "target_pods": 4,
+ "support": {
+  "balance": 0.823,
+  "balance_note": "min over 16 directions of support-hull reach / panel reach from the panel centroid",
+  "panel_centroid_sim": [
+   0.0,
+   -357.9
+  ],
+  "hull_fraction": 0.747,
+  "span_x": 0.829,
+  "span_y": 0.858
+ },
+ "types": [
+  {
+   "name": "VCBL-K2 140x115x100",
+   "across": 115,
+   "along": 140
+  },
+  {
+   "name": "VCBL-K2 125x75x100 Q",
+   "across": 125,
+   "along": 75
+  },
+  {
+   "name": "VCBL-K2 120x50x100 Q",
+   "across": 120,
+   "along": 50
+  },
+  {
+   "name": "VCBL-K2 125x75x100 L (likely 4th)",
+   "across": 75,
+   "along": 125
+  }
+ ],
+ "rails": [
+  {
+   "rail": 1,
+   "x_edge_sim": -212.5,
+   "x_edge_machine": 195.0,
+   "x_centre_sim": -155.0,
+   "used": true,
+   "status": "2 pods"
+  },
+  {
+   "rail": 2,
+   "x_edge_sim": -77.5,
+   "x_edge_machine": 330.0,
+   "x_centre_sim": -20.0,
+   "used": false,
+   "status": "idle UNDER the panel (between used rails, no pods)"
+  },
+  {
+   "rail": 3,
+   "x_edge_sim": 100.5,
+   "x_edge_machine": 508.0,
+   "x_centre_sim": 158.0,
+   "used": true,
+   "status": "2 pods"
+  },
+  {
+   "rail": 4,
+   "x_edge_sim": 2292.5,
+   "x_edge_machine": 2700.0,
+   "x_centre_sim": 2350.0,
+   "used": false,
+   "status": "parked at max travel  [outside sim X travel +-2000 / model view]"
+  }
+ ],
+ "pods": [
+  {
+   "rail": 1,
+   "type": "VCBL-K2 125x75x100 Q",
+   "art": "10.01.12.00447",
+   "rot": 0,
+   "base_M_start": 780.0,
+   "base_M_end": 920.0,
+   "top_rect_sim": [
+    -217.5,
+    -92.5,
+    -267.5,
+    -192.5
+   ],
+   "z": [
+    -100,
+    0
+   ]
+  },
+  {
+   "rail": 1,
+   "type": "VCBL-K2 125x75x100 L (likely 4th)",
+   "art": "10.01.12.00506",
+   "rot": 0,
+   "base_M_start": 1045.0,
+   "base_M_end": 1185.0,
+   "top_rect_sim": [
+    -192.5,
+    -117.5,
+    -535.5,
+    -410.5
+   ],
+   "z": [
+    -100,
+    0
+   ]
+  },
+  {
+   "rail": 3,
+   "type": "VCBL-K2 125x75x100 Q",
+   "art": "10.01.12.00447",
+   "rot": 0,
+   "base_M_start": 780.0,
+   "base_M_end": 920.0,
+   "top_rect_sim": [
+    95.5,
+    220.5,
+    -267.5,
+    -192.5
+   ],
+   "z": [
+    -100,
+    0
+   ]
+  },
+  {
+   "rail": 3,
+   "type": "VCBL-K2 125x75x100 L (likely 4th)",
+   "art": "10.01.12.00506",
+   "rot": 0,
+   "base_M_start": 1045.0,
+   "base_M_end": 1185.0,
+   "top_rect_sim": [
+    120.5,
+    195.5,
+    -535.5,
+    -410.5
+   ],
+   "z": [
+    -100,
+    0
+   ]
+  }
+ ],
+ "inventory_left": {
+  "VCBL-K2 140x115x100": 4,
+  "VCBL-K2 125x75x100 Q": 2,
+  "VCBL-K2 120x50x100 Q": 4,
+  "VCBL-K2 125x75x100 L (likely 4th)": 0
+ }
+}

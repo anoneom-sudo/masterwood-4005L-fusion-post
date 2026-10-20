@@ -9,3 +9,12 @@
 !samples/
 !samples/*.prg
 !samples/*.PRG
+
+# Not for the public repo
+_backup/
+_archive/
+**/_backup/
+*.bak*
+*.orig
+**/harness/out/
+**/probe/

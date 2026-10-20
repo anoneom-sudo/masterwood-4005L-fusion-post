@@ -1,0 +1,202 @@
+--- masterwood_4005L.base.cps	2026-10-19 13:38:16
++++ masterwood_4005L_naming.cps	2026-10-19 13:39:51
+@@ -15,6 +15,11 @@
+   Spec: AGENTS.md (STATUS scoreboard in Obsidian)
+ 
+   FORKID {B3E91C70-4A5D-4F2B-9E18-7C2A1F06D4B8}
++
++  Naming fork: output file "<Fusion document> NN.prg" (NN = 01..99), see
++  fork-naming/README.md. The engine writes Fusion's default file, then
++  onTerminate() moves it to the computed name. A re-post of the same NC
++  program (same Name/number) reuses its NN and overwrites.
+ */
+ 
+ description = "Masterwood 4005L MW310";
+@@ -113,6 +118,22 @@
+     value      : true,
+     scope      : "post"
+   },
++  autoFileName: {
++    title      : "Name file '<document> NN'",
++    description: "Rename the output to '<Fusion document name> NN.prg' (NN = 01..99) and write that name on |1. Re-posting the same NC program (same Name/number) reuses its NN. Off = Fusion's file name and |1 = Name/number.",
++    group      : "preferences",
++    type       : "boolean",
++    value      : true,
++    scope      : "post"
++  },
++  forceMM: {
++    title      : "Force mm output (harness)",
++    description: "Harness only: convert an inch intermediate (Autodesk sample .cnc) to mm instead of failing.",
++    group      : "preferences",
++    type       : "boolean",
++    value      : false,
++    scope      : "post"
++  },
+   cSimOffset: {
+     title      : "Simulate C offset (deg)",
+     description: "Added only for Fusion Machine Sim (setCurrentABC / setTargetC), not on G173. Mill park C0 = Fusion C home 90. Use ±90; +90 vs -90 flips lean inside/outside (180° about vertical). Default 90 (2026-10-19, paired with cMillOffset 180; was -90 with offset 0).",
+@@ -235,6 +256,134 @@
+ 
+ function onPassThrough(text) {
+   writeln(text);
++}
++
++// ---- Output naming: "<document> NN.prg" ----------------------------------
++var outputPlan = null; // {doc, number, name, path, key, rename}
++
++function pad2(n) {
++  return (n < 10 ? "0" : "") + n;
++}
++
++function getDocumentName() {
++  // Fusion passes the document name with its version, e.g. "Bath - foot end v12".
++  var doc = String(getGlobalParameter("document-path", ""));
++  doc = doc.split(/[\\\/]/).pop();
++  doc = doc.replace(/\s+v\d+$/, "");
++  doc = doc.replace(/[\\\/:*?"<>|\x00-\x1f]/g, "-");
++  return doc.replace(/^\s+|\s+$/g, "");
++}
++
++function escapeRegExp(text) {
++  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
++}
++
++// NC program identity: Fusion's Name/number (1001, 1002, ...) is fixed per
++// NC program and survives re-posting. Fallback: Fusion's output file name.
++function getNcKey() {
++  var key = programName ? String(programName) : "";
++  if (!key || key == "UNNAMED") {
++    key = FileSystem.getFilename(getOutputPath()).replace(/\.[^.]*$/, "");
++  }
++  return key.replace(/[()]/g, " ").replace(/^\s+|\s+$/g, "");
++}
++
++function getKeyLine(key) {
++  return "( NC " + key + " )";
++}
++
++function fileHasKey(path, key) {
++  var wanted = getKeyLine(key);
++  var file;
++  try {
++    file = new TextFile(path, false, "utf-8");
++    for (var i = 0; i < 40; ++i) {
++      var line = file.readln();
++      if (line == "%" && i > 0) {
++        break;
++      }
++      if (line.replace(/\r$/, "") == wanted) {
++        file.close();
++        return true;
++      }
++    }
++  } catch (e) {
++    // end of file or unreadable
++  }
++  try {
++    if (file) {
++      file.close();
++    }
++  } catch (e2) {
++  }
++  return false;
++}
++
++function planOutputName() {
++  if (!getProperty("autoFileName")) {
++    return null;
++  }
++  var doc = getDocumentName();
++  if (!doc) {
++    warning(localize("No document name in the intermediate; keeping Fusion's file name."));
++    return null;
++  }
++  var outPath = getOutputPath();
++  var folder = FileSystem.getFolderPath(outPath);
++  var base = FileSystem.getFilename(outPath).replace(/\.[^.]*$/, "");
++  var key = getNcKey();
++  var plan = {doc:doc, key:key, number:0, name:"", path:"", rename:true};
++
++  // Fusion file name already follows the scheme (typed by hand): keep it.
++  var m = base.match(new RegExp("^" + escapeRegExp(doc) + " (\\d\\d)$"));
++  if (m) {
++    plan.number = parseInt(m[1], 10);
++    plan.name = base;
++    plan.path = outPath;
++    plan.rename = false;
++    return plan;
++  }
++
++  // Re-post: reuse the NN of the file that carries this NC program's key.
++  // New: highest existing NN + 1 (never refill a gap; an old file with that
++  // name may still be on the control).
++  var highest = 0;
++  for (var n = 1; n <= 99; ++n) {
++    var p = FileSystem.getCombinedPath(folder, doc + " " + pad2(n) + "." + extension);
++    if (!FileSystem.isFile(p)) {
++      continue;
++    }
++    highest = n;
++    if (fileHasKey(p, key)) {
++      plan.number = n;
++      break;
++    }
++  }
++  if (!plan.number) {
++    if (highest >= 99) {
++      error(subst(localize("'%1 01..99' are all used. Rename or archive old programs."), doc));
++      return null;
++    }
++    plan.number = highest + 1;
++  }
++  plan.name = doc + " " + pad2(plan.number);
++  plan.path = FileSystem.getCombinedPath(folder, plan.name + "." + extension);
++  return plan;
++}
++
++function onTerminate() {
++  if (!outputPlan || !outputPlan.rename) {
++    return;
++  }
++  var src = getOutputPath();
++  if (!FileSystem.isFile(src) || FileSystem.getFileSize(src) == 0) {
++    return;
++  }
++  if (FileSystem.isFile(outputPlan.path)) {
++    FileSystem.remove(outputPlan.path); // re-post of the same NC program
++  }
++  FileSystem.moveFile(src, outputPlan.path);
++  log("Renamed output to '" + outputPlan.path + "'");
+ }
+ 
+ function getStockExtent(axis) {
+@@ -502,6 +651,9 @@
+ }
+ 
+ function onOpen() {
++  if (getProperty("forceMM")) {
++    unit = MM; // harness only: Autodesk sample intermediates are inch
++  }
+   if (unit != MM) {
+     error(localize("This Masterwood post is millimetres only."));
+     return;
+@@ -512,7 +664,8 @@
+   activateMachine();
+ 
+   writeln("%");
+-  writeln("|1 " + (programName ? programName : ""));
++  outputPlan = planOutputName();
++  writeln("|1 " + (outputPlan ? outputPlan.name : (programName ? programName : "")));
+   writeln("|2 0");
+   writeln("|3 1");
+   writeln("|4 " + xyzFormat.format(getStockExtent("x")));
+@@ -532,6 +685,9 @@
+   writeln("#910=DX");
+   writeln("#911=DY");
+   writeln("M61 K" + getProperty("vacuumField") + " D1");
++  if (outputPlan) {
++    writeln(getKeyLine(outputPlan.key)); // re-post finds its NN by this line
++  }
+   if (programComment) {
+     writeComment(programComment);
+   }

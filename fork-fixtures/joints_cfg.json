@@ -1,0 +1,218 @@
+{
+ "expect_version": 7,
+ "dry_run": false,
+ "make_parametric": false,
+ "rail_x_machine_min_max": {
+  "1": [
+   105,
+   2215
+  ],
+  "2": [
+   243,
+   2350
+  ],
+  "3": [
+   418,
+   2525
+  ],
+  "4": [
+   595,
+   2700
+  ],
+  "5": [
+   2450,
+   4615
+  ],
+  "6": [
+   2628,
+   4790
+  ],
+  "7": [
+   2803,
+   4965
+  ],
+  "8": [
+   2941,
+   5105
+  ]
+ },
+ "default_rail_x_machine": {
+  "1": 195,
+  "2": 508,
+  "3": 2525,
+  "4": 2700,
+  "5": 4615,
+  "6": 4790,
+  "7": 4965,
+  "8": 5105
+ },
+ "default_note": "rails 1+2 under the foot-end panel (195/508 = v3 placer X); rails 3+4 parked stacked at max travel: 4 at 2700 (measured), 3 at 2700-175 = 2525. Field 2 (5-8) parked at their far (ventose) max so they clear field 1 in the crossover zone [assumption]. Joint value 0 = as-modelled position (ventose min / rail_x_machine); limits relative to it.",
+ "save_note": "pods v8: every rail has 8 pods (2x 140x115, 2x 125x75Q, 2x 120x50Q, 2x 125x75L) on Y sliders, parked behind the rail back end beyond the gantry legs (sim Y >= 1160); old 14-pod set removed; rails unchanged",
+ "joint_zero": "as-modelled rail position = rails_layout.rail_x_machine",
+ "pods_v7_old": [
+  {
+   "rail": 1,
+   "type": "140x115",
+   "across": 115,
+   "along": 140,
+   "M_centre": 115
+  },
+  {
+   "rail": 1,
+   "type": "125x75 Q",
+   "across": 125,
+   "along": 75,
+   "M_centre": 880
+  },
+  {
+   "rail": 1,
+   "type": "125x75 L",
+   "across": 75,
+   "along": 125,
+   "M_centre": 1123
+  },
+  {
+   "rail": 2,
+   "type": "140x115",
+   "across": 115,
+   "along": 140,
+   "M_centre": 115
+  },
+  {
+   "rail": 2,
+   "type": "125x75 Q",
+   "across": 125,
+   "along": 75,
+   "M_centre": 880
+  },
+  {
+   "rail": 2,
+   "type": "125x75 L",
+   "across": 75,
+   "along": 125,
+   "M_centre": 1123
+  },
+  {
+   "rail": 3,
+   "type": "140x115",
+   "across": 115,
+   "along": 140,
+   "M_centre": 115
+  },
+  {
+   "rail": 3,
+   "type": "125x75 Q",
+   "across": 125,
+   "along": 75,
+   "M_centre": 400
+  },
+  {
+   "rail": 3,
+   "type": "120x50 Q",
+   "across": 120,
+   "along": 50,
+   "M_centre": 700
+  },
+  {
+   "rail": 3,
+   "type": "120x50 Q",
+   "across": 120,
+   "along": 50,
+   "M_centre": 1000
+  },
+  {
+   "rail": 4,
+   "type": "140x115",
+   "across": 115,
+   "along": 140,
+   "M_centre": 115
+  },
+  {
+   "rail": 4,
+   "type": "125x75 Q",
+   "across": 125,
+   "along": 75,
+   "M_centre": 400
+  },
+  {
+   "rail": 4,
+   "type": "120x50 Q",
+   "across": 120,
+   "along": 50,
+   "M_centre": 700
+  },
+  {
+   "rail": 4,
+   "type": "120x50 Q",
+   "across": 120,
+   "along": 50,
+   "M_centre": 1000
+  }
+ ],
+ "pod_sets": {
+  "types": {
+   "140": {
+    "short": "140x115",
+    "across": 115,
+    "along": 140,
+    "rot180_shift": 0
+   },
+   "Q75": {
+    "short": "125x75Q",
+    "across": 125,
+    "along": 75,
+    "rot180_shift": 60
+   },
+   "Q50": {
+    "short": "120x50Q",
+    "across": 120,
+    "along": 50,
+    "rot180_shift": 36
+   },
+   "L": {
+    "short": "125x75L",
+    "across": 75,
+    "along": 125,
+    "rot180_shift": 16
+   }
+  },
+  "set": [
+   [
+    "140",
+    "a"
+   ],
+   [
+    "140",
+    "b"
+   ],
+   [
+    "Q75",
+    "a"
+   ],
+   [
+    "Q75",
+    "b"
+   ],
+   [
+    "Q50",
+    "a"
+   ],
+   [
+    "Q50",
+    "b"
+   ],
+   [
+    "L",
+    "a"
+   ],
+   [
+    "L",
+    "b"
+   ]
+  ],
+  "park_y_start_sim": 1160,
+  "park_gap": 10,
+  "M_front_limit": 1255,
+  "note": "Park row starts at sim Y 1160: X-gantry legs occupy |Y| 960..1120 at Z-100..0 over the whole X sweep (probed v7), static base is below Z-191, tool Y travel +-725. Order nearest->farthest: 140 a,b, Q75 a,b, Q50 a,b, L a,b. Joint value 0 = parked; front limit = top-plate centre M1255 (Johannes said 'front limit M45'; M45 is the back end of the rail scale, so the full rail M45..1255 is reachable). rot180_shift = 2 x top_offset_from_port (guess values 30/18/8): a rot-180 pod's top plate sits that much further toward the front than the rot-0 box at the same port."
+ }
+}

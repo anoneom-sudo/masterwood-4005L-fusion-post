@@ -1,0 +1,9 @@
+%
+|
+C1 1 'C:\Mw310\Prog\TEST\Test.tlf' 750 48 115 'vacuum.blk' ''
+C2 0 '' 0 0 0 '' ''
+C3 0 '' 0 0 0 '' ''
+C4 0 '' 0 0 0 '' ''
+R1
+A          1 1I 2I 3I VOFF
+%
