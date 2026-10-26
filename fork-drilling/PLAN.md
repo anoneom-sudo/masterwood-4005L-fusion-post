@@ -8,8 +8,8 @@ Read first: `docs/drilling-dialect.md` (dialect, proven vs inferred) and `harnes
 | Done | File |
 |---|---|
 | Dialect reference from ISO.TXT, goldens, the 2023 archive (135 G100 programs, 21,605 TLF line-borings), Offset.prm and TAB01 2026-10-19 | `docs/drilling-dialect.md` |
-| Fork of the live post with a header and a **small skeleton**: Fusion T201–T250 → `G100 … T<station>`, one G100 per hole, `#911` Y form, depth guard, unsupported cycles refused. Electrospindle drilling (T1–T10/T101–T110) is still expanded to G173/G101. | `masterwood_4005L_drill.cps` |
-| Headless harness (Fusion's own `post` CLI) + checker that expands gang strokes into holes | `harness/run_post.sh`, `harness/check_prg.py` |
+| Fork of the live post. Fusion T201–T250 → boring station. Gang rows on the 32 mm X pitch become `#T81` / `#T82` / `#T83`; every other hole stays one `G100`. | `masterwood_4005L_drill.cps`, `docs/GANG-DRILLING.md` |
+| Headless gang test (no Fusion) plus the older post-engine harness | `harness/run_gang_test.sh`, `harness/run_post.sh`, `harness/check_prg.py` |
 | Expected outputs in MW310 dialect | `docs/example-side-panel-*.prg`, `docs/example-B2-subset-target.prg`, `harness/expected/*.holes` |
 
 The fork is **not** in Fusion's posts folder and must not be symlinked there until §7.

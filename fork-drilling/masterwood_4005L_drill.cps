@@ -8,10 +8,11 @@
            system holes (D5 on 32 mm pitch), dowels and hinge cups.
   Spec   : fork-drilling/docs/drilling-dialect.md and fork-drilling/PLAN.md
   Test   : fork-drilling/harness/run_post.sh (headless Fusion post engine)
-  Status : SKELETON. Single-spindle G100 only (one G100 per Fusion hole).
-           No #T81 multi-spindle grouping yet (PLAN step 4, cloud-agent task).
-           Not proven on the mill. Do not send output to the machine
-           without the dry-run steps in PLAN.md.
+  Status : PROTOTYPE. One Fusion drill op can become multi-spindle G100
+           (#T81/#X81/#S81 and further T8n groups) when holes sit on the
+           32 mm X row. Anything that does not fit stays one G100 per hole.
+           Not proven on the mill. See fork-drilling/docs/GANG-DRILLING.md.
+           Do not send output to the machine without the dry-run steps in PLAN.md.
   Tool mapping in this fork:
     Fusion T1..T10 / T101..T110 -> electrospindle T41/n (unchanged, drilling
                                    cycles are expanded to G173/G101 like before)
@@ -151,6 +152,46 @@ properties = {
     value      : 1,
     scope      : "post"
   },
+  gangDrilling: {
+    title      : "Gang boring",
+    description: "Group holes on the 32 mm X row into one G100 (#T81 and further groups). Off-pitch holes and other stations stay one G100 each. Fork only.",
+    group      : "preferences",
+    type       : "boolean",
+    value      : true,
+    scope      : "operation"
+  },
+  gangStations: {
+    title      : "Gang stations along X",
+    description: "Consecutive boring stations from low X to high X. TAB01 stations 2-6 are the 5 mm row bits. Fork only.",
+    group      : "preferences",
+    type       : "string",
+    value      : "2,3,4,5,6",
+    scope      : "post"
+  },
+  gangPitch: {
+    title      : "Gang pitch (mm)",
+    description: "Distance between consecutive gang stations. Offset.prm X row is 32.00 mm. Fork only.",
+    group      : "preferences",
+    type       : "number",
+    value      : 32,
+    scope      : "post"
+  },
+  maxGangGroups: {
+    title      : "Max gang groups",
+    description: "How many distinct #T8n spindle sets one program may define (shop programs use T81-T83). Further patterns are single G100. Fork only.",
+    group      : "preferences",
+    type       : "integer",
+    value      : 3,
+    scope      : "post"
+  },
+  checkStationDiameter: {
+    title      : "Check boring diameter",
+    description: "Error if the Fusion tool diameter does not match TAB01 for that station. Fork only. Turn off for Autodesk sample .cnc files.",
+    group      : "preferences",
+    type       : "boolean",
+    value      : true,
+    scope      : "post"
+  },
   forceMM: {
     title      : "Force mm output (harness)",
     description: "Fork/harness only: convert an inch intermediate (Autodesk sample .cnc) to mm instead of failing.",
@@ -192,6 +233,8 @@ var receivedMachineConfiguration = false;
 var machineActivated = false;
 var boringSection = false; // fork: current section uses the boring head (G100)
 var boringStation = 0;
+var gangPlanner = null;
+var boringHoles = [];
 
 // Two number spaces:
 //   mill C  = on G173 (Masterwood). geometric from toolAnglesFromForward, then cMillSign/offset.
@@ -558,6 +601,9 @@ function onOpen() {
     return;
   }
 
+  gangPlanner = makeGangPlanner();
+  boringHoles = [];
+
   receivedMachineConfiguration = machineConfiguration.isReceived();
   defineMachine();
   activateMachine();
@@ -618,6 +664,18 @@ function onSection() {
     error(localize("Fork: boring-head tools (T201..T250) are vertical only. Use a top-down setup / tool orientation."));
     return;
   }
+  if (boringSection && getProperty("checkStationDiameter")) {
+    var expectedDia = boringDiameterMm(boringStation);
+    if (expectedDia > 0 && tool.diameter && Math.abs(tool.diameter - expectedDia) > 0.15) {
+      error(subst(
+        localize("Fork: tool diameter %1 mm does not match boring station %2 (%3 mm in TAB01)."),
+        tool.diameter,
+        boringStation,
+        expectedDia
+      ));
+      return;
+    }
+  }
 
   writeComment(getParameter("operation-comment", ""));
   // Mill A/C for this section are applied on the first G173 at headOrientHeight.
@@ -673,15 +731,439 @@ function onCircular(clockwise, cx, cy, cz, x, y, z, feed) {
 }
 
 // ---------------------------------------------------------------------------
-// Fork: drilling skeleton. See docs/drilling-dialect.md for the dialect.
-// Proven syntax (archive): G100 X.. Y.. Z.. F.. T..   and Y=#var form.
+// Fork: vertical boring (G100) and gang grouping.
+// The block between the GANG-PURE markers is plain JavaScript. The node
+// harness evaluates that block alone, so it must not call the Fusion post API.
 // ---------------------------------------------------------------------------
+// >>> GANG-PURE-BEGIN
+function gangFormatNum(n, decimals) {
+  if (typeof n != "number" || isNaN(n)) {
+    return "0";
+  }
+  var s = n.toFixed(decimals);
+  if (s.indexOf(".") >= 0) {
+    s = s.replace(/0+$/, "").replace(/\.$/, "");
+  }
+  if (s == "-0") {
+    return "0";
+  }
+  return s;
+}
+
+function gangSame(a, b, tol) {
+  return Math.abs(a - b) <= tol;
+}
+
+function gangIndexOf(arr, value) {
+  var i;
+  for (i = 0; i < arr.length; ++i) {
+    if (arr[i] === value) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function gangMirrorList(stations, rowFirst, rowLast) {
+  var out = [];
+  var i;
+  for (i = 0; i < stations.length; ++i) {
+    out.push(rowFirst + rowLast - stations[i]);
+  }
+  return out;
+}
+
+function gangProgramY(fusionY, fmt) {
+  var y = (fmt.ySign || 1) * fusionY;
+  if (fmt.useY911 && fmt.dy > 0) {
+    return fmt.dy - y;
+  }
+  return y;
+}
+
+function gangCluster(items, valueOf, tol) {
+  var clusters = [];
+  var i;
+  for (i = 0; i < items.length; ++i) {
+    var v = valueOf(items[i]);
+    var placed = false;
+    var c;
+    for (c = 0; c < clusters.length; ++c) {
+      if (gangSame(clusters[c].anchor, v, tol)) {
+        clusters[c].items.push(items[i]);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      clusters.push({anchor:v, items:[items[i]]});
+    }
+  }
+  return clusters;
+}
+
+// Diameters from TAB01.DAT (same file as MW310 PARAM.zip Param/TAB01.DAT).
+// The diameter column is 0.01 mm. Station 10 is left out: the name says
+// Drevelboor 57x6 while the field is 700. Station 7 is empty.
+function boringDiameterMm(station) {
+  switch (station) {
+  case 1:
+    return 3;
+  case 2:
+  case 3:
+  case 4:
+  case 5:
+  case 6:
+    return 5;
+  case 8:
+    return 4.5;
+  case 9:
+    return 8;
+  case 12:
+    return 35;
+  case 13:
+    return 10;
+  default:
+    return 0;
+  }
+}
+
+function createGangPlanner(opts) {
+  return {
+    pitch: opts.pitch,
+    stations: opts.stations,
+    tol: opts.tol,
+    maxGroups: opts.maxGroups,
+    groups: {},
+    groupOrder: [],
+    emitted: {},
+    limitWarned: false
+  };
+}
+
+function gangPushWarn(warnings, text) {
+  if (warnings.length < 12) {
+    warnings.push(text);
+  }
+}
+
+function gangCheckPoint(planner, fmt, x, y, warnings) {
+  if (!(fmt.dx > 0) || !(fmt.dy > 0)) {
+    return;
+  }
+  var py = gangProgramY(y, fmt);
+  if (x < -planner.tol || x > fmt.dx + planner.tol || py < -planner.tol || py > fmt.dy + planner.tol) {
+    gangPushWarn(warnings, "Gang: drilled point X" + gangFormatNum(x, 2) + " Y" + gangFormatNum(py, 2) + " is outside the panel.");
+  }
+}
+
+function gangDefine(planner, subset) {
+  var key = subset.join(",");
+  if (planner.groups[key]) {
+    return planner.groups[key].n;
+  }
+  var fullKey = planner.stations.join(",");
+  var n;
+  if (key == fullKey) {
+    n = 81;
+  } else {
+    var used = {};
+    var i;
+    for (i = 0; i < planner.groupOrder.length; ++i) {
+      used[planner.groups[planner.groupOrder[i]].n] = true;
+    }
+    n = 82;
+    while (used[n]) {
+      n++;
+    }
+  }
+  if (n > 80 + planner.maxGroups) {
+    return 0;
+  }
+  planner.groups[key] = {
+    n: n,
+    stations: subset.slice(),
+    mirror: gangMirrorList(subset, planner.stations[0], planner.stations[planner.stations.length - 1])
+  };
+  planner.groupOrder.push(key);
+  return n;
+}
+
+function gangSingleStroke(h) {
+  return {kind:"single", x:h.x, y:h.y, z:h.z, f:h.f, t:h.station};
+}
+
+function gangGreedyRow(planner, rowHoles, fmt, warnings) {
+  var remaining = rowHoles.slice().sort(function(a, b) {
+    return a.x - b.x;
+  });
+  var originalCount = remaining.length;
+  var strokes = [];
+  var stations = planner.stations;
+  var nGang = stations.length;
+  while (remaining.length) {
+    var x0 = remaining[0].x;
+    var chosen = [];
+    var used = {};
+    var k;
+    var j;
+    for (k = 0; k < nGang; ++k) {
+      var target = x0 + planner.pitch * k;
+      var best = -1;
+      var bestDist = planner.tol + 1;
+      for (j = 0; j < remaining.length; ++j) {
+        if (used[j]) {
+          continue;
+        }
+        var dist = Math.abs(remaining[j].x - target);
+        if (dist <= planner.tol && dist < bestDist) {
+          best = j;
+          bestDist = dist;
+        }
+      }
+      if (best >= 0) {
+        used[best] = true;
+        chosen.push({hole:remaining[best], station:stations[k]});
+      }
+    }
+    var next = [];
+    for (j = 0; j < remaining.length; ++j) {
+      if (!used[j]) {
+        next.push(remaining[j]);
+      }
+    }
+    remaining = next;
+    if (chosen.length <= 1) {
+      var alone = chosen[0].hole;
+      if (originalCount > 1) {
+        gangPushWarn(
+          warnings,
+          "Gang: hole X" + gangFormatNum(alone.x, 2) + " Y" + gangFormatNum(gangProgramY(alone.y, fmt), 2) + " does not share the " + planner.pitch + " mm pitch; posted as single T" + alone.station + "."
+        );
+      }
+      gangCheckPoint(planner, fmt, alone.x, alone.y, warnings);
+      strokes.push(gangSingleStroke(alone));
+      continue;
+    }
+    var subset = [];
+    for (k = 0; k < chosen.length; ++k) {
+      subset.push(chosen[k].station);
+    }
+    var groupNumber = gangDefine(planner, subset);
+    if (!groupNumber) {
+      if (!planner.limitWarned) {
+        planner.limitWarned = true;
+        warnings.push("Gang: more than " + planner.maxGroups + " spindle groups; extra holes posted as single G100.");
+      }
+      for (k = 0; k < chosen.length; ++k) {
+        gangCheckPoint(planner, fmt, chosen[k].hole.x, chosen[k].hole.y, warnings);
+        strokes.push(gangSingleStroke(chosen[k].hole));
+      }
+      continue;
+    }
+    var anchor = chosen[0].hole;
+    for (k = 0; k < subset.length; ++k) {
+      var idx = gangIndexOf(stations, subset[k]);
+      gangCheckPoint(planner, fmt, anchor.x + planner.pitch * idx, anchor.y, warnings);
+    }
+    strokes.push({kind:"gang", x:anchor.x, y:anchor.y, z:anchor.z, f:anchor.f, t:groupNumber});
+  }
+  return strokes;
+}
+
+function planGangStrokes(planner, holes, fmt) {
+  var warnings = [];
+  var eligible = [];
+  var singles = [];
+  var i;
+  for (i = 0; i < holes.length; ++i) {
+    var h = holes[i];
+    if (fmt.gangEnabled && gangIndexOf(planner.stations, h.station) >= 0) {
+      eligible.push(h);
+    } else {
+      gangCheckPoint(planner, fmt, h.x, h.y, warnings);
+      singles.push(gangSingleStroke(h));
+    }
+  }
+  var rows = [];
+  var yClusters = gangCluster(eligible, function(item) {
+    return item.y;
+  }, planner.tol);
+  var yc;
+  for (yc = 0; yc < yClusters.length; ++yc) {
+    var zClusters = gangCluster(yClusters[yc].items, function(item) {
+      return item.z;
+    }, planner.tol);
+    var zc;
+    for (zc = 0; zc < zClusters.length; ++zc) {
+      var fClusters = gangCluster(zClusters[zc].items, function(item) {
+        return item.f;
+      }, 0.001);
+      var fc;
+      for (fc = 0; fc < fClusters.length; ++fc) {
+        rows.push(fClusters[fc].items);
+      }
+    }
+  }
+  rows.sort(function(a, b) {
+    var py = gangProgramY(a[0].y, fmt) - gangProgramY(b[0].y, fmt);
+    if (Math.abs(py) > planner.tol) {
+      return py;
+    }
+    var pz = a[0].z - b[0].z;
+    if (Math.abs(pz) > planner.tol) {
+      return pz;
+    }
+    return a[0].f - b[0].f;
+  });
+  var gangs = [];
+  var loose = singles.slice();
+  var r;
+  for (r = 0; r < rows.length; ++r) {
+    var produced = gangGreedyRow(planner, rows[r], fmt, warnings);
+    if (r % 2 == 1) {
+      produced.reverse();
+    }
+    var p;
+    for (p = 0; p < produced.length; ++p) {
+      if (produced[p].kind == "gang") {
+        gangs.push(produced[p]);
+      } else {
+        loose.push(produced[p]);
+      }
+    }
+  }
+  loose.sort(function(a, b) {
+    var py = gangProgramY(a.y, fmt) - gangProgramY(b.y, fmt);
+    if (Math.abs(py) > planner.tol) {
+      return py;
+    }
+    var pz = a.z - b.z;
+    if (Math.abs(pz) > planner.tol) {
+      return pz;
+    }
+    if (Math.abs(a.x - b.x) > planner.tol) {
+      return a.x - b.x;
+    }
+    return a.t - b.t;
+  });
+  var fresh = [];
+  for (i = 0; i < planner.groupOrder.length; ++i) {
+    var g = planner.groups[planner.groupOrder[i]];
+    if (!planner.emitted[g.n]) {
+      fresh.push(g);
+      planner.emitted[g.n] = true;
+    }
+  }
+  fresh.sort(function(a, b) {
+    return a.n - b.n;
+  });
+  return {strokes:gangs.concat(loose), newGroups:fresh, warnings:warnings};
+}
+
+function renderBoringLines(plan, fmt) {
+  var lines = [];
+  var ySign = fmt.ySign || 1;
+  var i;
+  for (i = 0; i < plan.newGroups.length; ++i) {
+    var g = plan.newGroups[i];
+    lines.push("#T" + g.n + "=" + g.stations.join(","));
+    lines.push("#X" + g.n + "=" + g.mirror.join(","));
+    lines.push("#S" + g.n + "=" + g.mirror.join(","));
+  }
+  for (i = 0; i < plan.strokes.length; ++i) {
+    var st = plan.strokes[i];
+    var shown = ySign * st.y;
+    var yWord;
+    if (fmt.useY911) {
+      lines.push("#902=#911-(" + gangFormatNum(shown, 2) + ")");
+      yWord = "Y=#902";
+    } else {
+      yWord = "Y" + gangFormatNum(shown, 2);
+    }
+    lines.push("G100 X" + gangFormatNum(st.x, 2) + " " + yWord + " Z" + gangFormatNum(st.z, 2) + " F" + gangFormatNum(st.f, 1) + " T" + st.t);
+  }
+  return lines;
+}
+// >>> GANG-PURE-END
+
 function getBoringStation(number) {
   var base = getProperty("boringToolBase");
   if (number > base && number <= base + 50) {
     return number - base;
   }
   return 0;
+}
+
+function readGangStations() {
+  var parts = String(getProperty("gangStations")).split(",");
+  var stations = [];
+  var i;
+  for (i = 0; i < parts.length; ++i) {
+    var n = parseInt(parts[i], 10);
+    if (!isNaN(n)) {
+      stations.push(n);
+    }
+  }
+  if (stations.length < 2) {
+    error(localize("Fork: gangStations needs at least two stations, low X to high X."));
+    return [2, 3, 4, 5, 6];
+  }
+  for (i = 1; i < stations.length; ++i) {
+    if (stations[i] !== stations[i - 1] + 1) {
+      error(localize("Fork: gangStations must be consecutive along X, for example 2,3,4,5,6."));
+      break;
+    }
+  }
+  return stations;
+}
+
+function makeGangPlanner() {
+  var pitch = getProperty("gangPitch");
+  if (!(pitch > 0)) {
+    error(localize("Fork: gang pitch must be greater than 0."));
+    pitch = 32;
+  }
+  var maxGroups = getProperty("maxGangGroups");
+  if (!(maxGroups >= 1)) {
+    error(localize("Fork: max gang groups must be at least 1."));
+    maxGroups = 3;
+  }
+  return createGangPlanner({
+    pitch: pitch,
+    stations: readGangStations(),
+    tol: 0.01,
+    maxGroups: maxGroups
+  });
+}
+
+function flushBoringHoles() {
+  if (!boringHoles.length) {
+    return;
+  }
+  var holes = boringHoles;
+  boringHoles = [];
+  if (!gangPlanner) {
+    error(localize("Fork: gang planner was not initialised."));
+    return;
+  }
+  var fmt = {
+    gangEnabled: !!getProperty("gangDrilling"),
+    ySign: getProperty("yMillSign"),
+    useY911: !!getProperty("useY911"),
+    dy: getStockExtent("y"),
+    dx: getStockExtent("x")
+  };
+  var plan = planGangStrokes(gangPlanner, holes, fmt);
+  var i;
+  for (i = 0; i < plan.warnings.length; ++i) {
+    warning(plan.warnings[i]);
+  }
+  var lines = renderBoringLines(plan, fmt);
+  for (i = 0; i < lines.length; ++i) {
+    writeln(lines[i]);
+  }
+  yOutput.reset();
 }
 
 function onCycle() {
@@ -717,21 +1199,19 @@ function onCyclePoint(x, y, z) {
     return;
   }
   var p = toPanel(x, y, z);
-  var yWord = formatY(p.y); // writes #902=#911-(y) when useY911
-  if (!getProperty("useY911")) {
-    yWord = "Y" + xyzFormat.format(getProperty("yMillSign") * p.y);
-  }
-  writeBlock(
-    "G100",
-    "X" + xyzFormat.format(p.x),
-    yWord,
-    "Z" + xyzFormat.format(depth),
-    "F" + feedFormat.format(toMPerMin(cycle.feedrate)),
-    "T" + boringStation
-  );
+  boringHoles.push({
+    x: p.x,
+    y: p.y,
+    z: depth,
+    f: toMPerMin(cycle.feedrate),
+    station: boringStation
+  });
 }
 
 function onCycleEnd() {
+  if (boringSection) {
+    flushBoringHoles();
+  }
 }
 
 function onDwell(seconds) {
@@ -759,6 +1239,9 @@ function onCommand(command) {
 }
 
 function onSectionEnd() {
+  if (boringSection) {
+    flushBoringHoles();
+  }
   if (radiusCompensation != RADIUS_COMPENSATION_OFF) {
     writeln("G40");
   }
