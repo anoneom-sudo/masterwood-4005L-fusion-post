@@ -8,7 +8,7 @@ Checks the post output **without Fusion running, posting, or being touched**. It
 ./run_gang_test.sh
 ```
 
-Reads the shelf-pin lines out of `samples/zijkant-links/1 2 Zijkant Links.tlf` (2445 × 561 × 18), runs the grouping code inside `masterwood_4005L_drill.cps`, and checks the NC against the 26-stroke pattern of the shop program. Also posts the 720 × 560 test part, a 17-hole subset (`T82=2,3`), and a gang-off single-hole program. `check_live_untouched.py` fails if `masterwood_4005L.cps` differs from git HEAD, and if the fork's routing functions changed. The shop `.PRG` itself is not in this git tree. The `.tlf` is.
+Reads the shelf-pin lines out of `samples/zijkant-links/1 2 Zijkant Links.tlf` (2445 × 561 × 18), runs the grouping code inside `masterwood_4005L_drill.cps`, and checks the NC against the 26-stroke pattern of the shop program. Also posts the 800 × 500 × 18 gang test panel (X and Y cases), the 720 × 560 shelf part, a 17-hole subset (`T82=2,3`), and a gang-off single-hole program. `check_live_untouched.py` fails if `masterwood_4005L.cps` differs from git HEAD, and if the fork's routing functions changed. The shop `.PRG` itself is not in this git tree. The `.tlf` is.
 
 ## Option A: headless Fusion post engine (works today)
 

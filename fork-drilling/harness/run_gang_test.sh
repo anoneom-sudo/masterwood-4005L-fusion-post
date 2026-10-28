@@ -15,7 +15,8 @@ for prg in \
   "$HERE/expected/zijkant-links-2445x561x18.prg" \
   "$HERE/expected/b2-17.prg" \
   "$HERE/expected/single-fallback.prg" \
-  "$HERE/expected/side-panel-720x560x18.prg"
+  "$HERE/expected/side-panel-720x560x18.prg" \
+  "$HERE/expected/test-panel-800x500.prg"
 do
   name="$(basename "$prg" .prg)"
   python3 "$HERE/check_prg.py" "$prg" | tee "$HERE/out/$name.check" | grep -vE '^  hole'

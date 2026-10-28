@@ -10,6 +10,8 @@ That is how the shop programs already work. In `1 2 Zijkant Links.tlf` every she
 
 Keep one `G100` per hole as the fallback. Turn grouping off with the operation property **Gang boring**.
 
+Rows along Y are not a second Ø5 gang. Stations 8–13 share one X and each holds a different bit. The only Y-row gang in the program archive is `tablet.PRG` (`#T81=10,8`, 64 mm). Rules, the station table, and the machine checks are in `gang-logic.md`. The 800 × 500 × 18 test panel is in `test-panel-800x500.md`.
+
 ## What the machine files actually show
 
 Sources used for this, and not committed (they are shop and manufacturer files):

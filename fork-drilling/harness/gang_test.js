@@ -384,7 +384,7 @@ check("fourth subset falls back to single G100",
   groups(limited.lines).length === 9 &&
   g100s(limited.lines).filter(function(line) { return / T2$/.test(line); }).length === 2);
 
-check("diameter table", boringDiameterMm(2) === 5 && boringDiameterMm(7) === 0 && boringDiameterMm(12) === 35 && boringDiameterMm(9) === 8);
+check("diameter table", boringDiameterMm(2) === 5 && boringDiameterMm(7) === 0 && boringDiameterMm(10) === 7 && boringDiameterMm(12) === 35 && boringDiameterMm(9) === 8 && boringDiameterMm(8) === 4.5);
 
 // --- programs the checker can read -----------------------------------------
 
@@ -434,6 +434,187 @@ check("side panel groups the shelf rows only",
   g100s(side.lines).filter(function(line) { return / T81$/.test(line); }).length === 6 &&
   g100s(side.lines).filter(function(line) { return / T9$/.test(line); }).length === 6 &&
   g100s(side.lines).filter(function(line) { return / T12$/.test(line); }).length === 1);
+
+// --- 800 x 500 x 18 test panel: every gang case on one board ---------------
+
+var PANEL = {dx:800, dy:500, dz:18};
+var DIA = {1:3, 2:5, 8:4.5, 9:8, 10:7, 13:10};
+var FTOOL = {1:201, 2:202, 8:208, 9:209, 10:210, 13:213};
+
+function fy(programY) { return PANEL.dy - programY; }
+function addHoles(list, xs, programY, z, feed, station, name) {
+  var i;
+  for (i = 0; i < xs.length; ++i) {
+    list.push({x:xs[i], y:fy(programY), z:z, f:feed, station:station, programY:programY, name:name});
+  }
+}
+var panelHoles = [];
+addHoles(panelHoles, xsFrom(48, 12), 36, 13, 2, 2, "A-long-X");
+addHoles(panelHoles, [100, 196, 228], 72, 13, 2, 2, "B-gap");
+addHoles(panelHoles, xsFrom(48, 5).concat([90]), 108, 13, 2, 2, "C-offpitch");
+addHoles(panelHoles, xsFrom(48, 5), 144, 13, 2, 2, "D-depth-13");
+addHoles(panelHoles, xsFrom(240, 5), 144, 8, 2, 2, "D-depth-8");
+addHoles(panelHoles, xsFrom(48, 5), 180, 13, 2, 2, "E-feed-2");
+addHoles(panelHoles, xsFrom(240, 5), 180, 13, 0.8, 2, "E-feed-0.8");
+addHoles(panelHoles, [620], 220, 13, 2, 2, "F-Y-column");
+addHoles(panelHoles, [620], 252, 13, 2, 2, "F-Y-column");
+addHoles(panelHoles, [620], 284, 13, 2, 2, "F-Y-column");
+addHoles(panelHoles, [620], 316, 13, 2, 2, "F-Y-column");
+addHoles(panelHoles, [620], 348, 13, 2, 2, "F-Y-column");
+addHoles(panelHoles, [720], 60, 13, 2, 9, "G-dowel-Y");
+addHoles(panelHoles, [720], 160, 13, 2, 9, "G-dowel-Y");
+addHoles(panelHoles, [720], 260, 13, 2, 9, "G-dowel-Y");
+addHoles(panelHoles, [540], 260, 13, 2, 10, "H-Y-gang");
+addHoles(panelHoles, [540], 324, 13, 2, 8, "H-Y-gang");
+addHoles(panelHoles, [540], 400, 13, 2, 10, "H-Y-gang");
+addHoles(panelHoles, [540], 464, 13, 2, 8, "H-Y-gang");
+addHoles(panelHoles, [100], 430, 19, 2, 1, "I-through");
+addHoles(panelHoles, [180], 430, 10, 2, 1, "I-blind");
+addHoles(panelHoles, [300], 280, 13, 2, 13, "J-isolated");
+addHoles(panelHoles, [460], 36, 13, 2, 9, "K-mixed-on-shelf-Y");
+
+var panelFmt = fmtOf({useY911:true, dy:PANEL.dy, dx:PANEL.dx, gangEnabled:true});
+var panelPlan = createGangPlanner({pitch:32, stations:[2, 3, 4, 5, 6], tol:0.01, maxGroups:8});
+var panelPost = post(panelHoles, panelFmt, panelPlan);
+var wantGroupBlock = [
+  "#T81=2,3,4,5,6", "#X81=6,5,4,3,2", "#S81=6,5,4,3,2",
+  "#T82=2,3", "#X82=6,5", "#S82=6,5",
+  "#T83=2,5,6", "#X83=6,3,2", "#S83=6,3,2",
+  "#T84=10,8", "#Y84=8,10", "#S84=8,10"
+].join("\n");
+check("800x500 group tables", groups(panelPost.lines).join("\n") === wantGroupBlock, groups(panelPost.lines).join("\n"));
+check("800x500 stroke count", g100s(panelPost.lines).length === 24, "got " + g100s(panelPost.lines).length);
+check("800x500 T81/T82/T83/T84 counts",
+  g100s(panelPost.lines).filter(function(l) { return / T81$/.test(l); }).length === 7 &&
+  g100s(panelPost.lines).filter(function(l) { return / T82$/.test(l); }).length === 1 &&
+  g100s(panelPost.lines).filter(function(l) { return / T83$/.test(l); }).length === 1 &&
+  g100s(panelPost.lines).filter(function(l) { return / T84$/.test(l); }).length === 2);
+check("800x500 Y gang anchors",
+  panelPost.lines.indexOf("#902=#911-(240)") >= 0 &&
+  panelPost.lines.indexOf("G100 X540 Y=#902 Z13 F2 T84") >= 0 &&
+  panelPost.lines.indexOf("#902=#911-(100)") >= 0);
+check("800x500 depth and feed stay split",
+  panelPost.lines.some(function(l) { return / Z8 F2 T81$/.test(l); }) &&
+  panelPost.lines.some(function(l) { return / Z13 F0.8 T81$/.test(l); }) &&
+  panelPost.lines.some(function(l) { return / Z19 F2 T1$/.test(l); }) &&
+  panelPost.lines.some(function(l) { return / X90 Y=#902 Z13 F2 T2$/.test(l); }));
+check("800x500 does not need a 5th group",
+  !panelPost.result.warnings.some(function(w) { return w.indexOf("spindle groups") >= 0; }));
+
+function expandPosted(lines, dy) {
+  var yOff = {1:-11063, 8:-17485, 9:-20675, 10:-23885, 12:-30285, 13:-33485};
+  var tables = {};
+  var holes = [];
+  var last = null;
+  var i;
+  for (i = 0; i < lines.length; ++i) {
+    var tab = lines[i].match(/^#([TXYS])(8\d)=([0-9,]+)$/);
+    if (tab) {
+      var n = parseInt(tab[2], 10);
+      if (!tables[n]) tables[n] = {};
+      tables[n][tab[1]] = tab[3].split(",").map(function(s) { return parseInt(s, 10); });
+      continue;
+    }
+    var set = lines[i].match(/^#902=#911-\(([-0-9.]+)\)$/);
+    if (set) { last = dy - parseFloat(set[1]); continue; }
+    var rel = lines[i].match(/^G100 X([-0-9.]+) Y=#902 Z([-0-9.]+) F([-0-9.]+) T(\d+)$/);
+    if (!rel) continue;
+    var x = parseFloat(rel[1]);
+    var z = parseFloat(rel[2]);
+    var t = parseInt(rel[4], 10);
+    if (t >= 81) {
+      var list = tables[t].T;
+      var s;
+      if (tables[t].Y && !tables[t].X) {
+        for (s = 0; s < list.length; ++s) {
+          holes.push([x, Math.round((last + (yOff[list[s]] - yOff[list[0]]) / 100) * 100) / 100, z]);
+        }
+      } else {
+        for (s = 0; s < list.length; ++s) {
+          holes.push([x + 32 * (list[s] - list[0]), last, z]);
+        }
+      }
+    } else {
+      holes.push([x, last, z]);
+    }
+    last = null;
+  }
+  return holes;
+}
+function keyOf(h) { return h[0] + "," + h[1] + "," + h[2]; }
+var postedKeys = expandPosted(panelPost.lines, PANEL.dy).map(keyOf).sort();
+var drawnKeys = panelHoles.map(function(h) { return h.x + "," + h.programY + "," + h.z; }).sort();
+check("800x500 expanded holes equal the drawing", postedKeys.join("|") === drawnKeys.join("|"),
+  "posted " + postedKeys.length + " drawn " + drawnKeys.length);
+
+function refCross(px, py) {
+  var cF = PANEL.dy - py;
+  return [
+    "#902=#911-(" + cF + ")",
+    "G173 X" + px + " Y=#902 Z-20 S18 E2 T41/1 A90 C0 D0",
+    "#902=#911-(" + cF + ")",
+    "G101 X" + px + " Y=#902 Z2 F2",
+    "#902=#911-(" + cF + ")",
+    "G101 X" + (px - 12) + " Y=#902 F2",
+    "#902=#911-(" + cF + ")",
+    "G101 X" + (px + 12) + " Y=#902 F2",
+    "#902=#911-(" + cF + ")",
+    "G101 X" + px + " Y=#902 F2",
+    "#902=#911-(" + (cF + 12) + ")",
+    "G101 X" + px + " Y=#902 F2",
+    "#902=#911-(" + (cF - 12) + ")",
+    "G101 X" + px + " Y=#902 F2",
+    "#902=#911-(" + cF + ")",
+    "G101 X" + px + " Y=#902 Z-20 F2"
+  ];
+}
+var panelBody = panelPost.lines.concat(refCross(24, 300)).concat(refCross(760, 250));
+var panelPrg = wrapProgram("test-panel-800x500", PANEL.dx, PANEL.dy, PANEL.dz, panelBody);
+fs.writeFileSync(path.join(OUT, "test-panel-800x500.prg"), panelPrg);
+writeExpected("test-panel-800x500.prg", panelPrg);
+
+var csv = ["case,fusion_x_mm,fusion_y_mm,program_x_mm,program_y_mm,diameter_mm,depth_mm,feed_mm_per_min,fusion_tool,station"];
+var di;
+for (di = 0; di < panelHoles.length; ++di) {
+  var ph = panelHoles[di];
+  csv.push([
+    ph.name, ph.x, ph.y, ph.x, ph.programY, DIA[ph.station], ph.z, Math.round(ph.f * 1000), FTOOL[ph.station], ph.station
+  ].join(","));
+}
+csv.push("cross,24," + fy(300) + ",24,300,0,2,2000,101,41");
+csv.push("cross,760," + fy(250) + ",760,250,0,2,2000,101,41");
+var csvText = csv.join("\n") + "\n";
+fs.writeFileSync(path.join(OUT, "test-panel-800x500.csv"), csvText);
+writeExpected("test-panel-800x500.csv", csvText);
+
+function dxfLine(layer, x1, y1, x2, y2) {
+  return ["0", "LINE", "8", layer, "10", x1, "20", y1, "30", "0", "11", x2, "21", y2, "31", "0"].join("\n");
+}
+function dxfCircle(layer, x, y, r) {
+  return ["0", "CIRCLE", "8", layer, "10", x, "20", y, "30", "0", "40", r].join("\n");
+}
+var dxf = ["0", "SECTION", "2", "HEADER", "9", "$INSUNITS", "70", "4", "0", "ENDSEC", "0", "SECTION", "2", "ENTITIES"];
+dxf.push(dxfLine("OUTLINE", 0, 0, 800, 0));
+dxf.push(dxfLine("OUTLINE", 800, 0, 800, 500));
+dxf.push(dxfLine("OUTLINE", 800, 500, 0, 500));
+dxf.push(dxfLine("OUTLINE", 0, 500, 0, 0));
+for (di = 0; di < panelHoles.length; ++di) {
+  var dh = panelHoles[di];
+  dxf.push(dxfCircle(dh.name, dh.x, dh.y, DIA[dh.station] / 2));
+}
+[[24, 300], [760, 250]].forEach(function(c) {
+  var cx = c[0];
+  var cy = fy(c[1]);
+  dxf.push(dxfLine("CROSS", cx - 12, cy, cx + 12, cy));
+  dxf.push(dxfLine("CROSS", cx, cy - 12, cx, cy + 12));
+});
+dxf.push("0");
+dxf.push("ENDSEC");
+dxf.push("0");
+dxf.push("EOF");
+var dxfText = dxf.join("\n") + "\n";
+fs.writeFileSync(path.join(OUT, "test-panel-800x500.dxf"), dxfText);
+writeExpected("test-panel-800x500.dxf", dxfText);
 
 if (failures) {
   console.log(failures + " failed");

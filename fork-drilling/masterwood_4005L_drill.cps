@@ -178,7 +178,7 @@ properties = {
   },
   maxGangGroups: {
     title      : "Max gang groups",
-    description: "How many distinct #T8n spindle sets one program may define (shop programs use T81-T83). Further patterns are single G100. Fork only.",
+    description: "How many distinct #T8n spindle sets one program may define. Shop programs use T81-T83. The 800x500 test panel needs 8 so the Y-arm group can be T84. Further patterns are single G100. Fork only.",
     group      : "preferences",
     type       : "integer",
     value      : 3,
@@ -660,6 +660,11 @@ function onSection() {
 
   boringStation = getBoringStation(tool.number);
   boringSection = boringStation > 0;
+  // Flush previous boring holes before a route, so consecutive drill ops
+  // (different diameters on the Y arm) can still share one stroke.
+  if (!boringSection) {
+    flushBoringHoles();
+  }
   if (boringSection && !isVerticalTool) {
     error(localize("Fork: boring-head tools (T201..T250) are vertical only. Use a top-down setup / tool orientation."));
     return;
@@ -802,9 +807,9 @@ function gangCluster(items, valueOf, tol) {
   return clusters;
 }
 
-// Diameters from TAB01.DAT (same file as MW310 PARAM.zip Param/TAB01.DAT).
-// The diameter column is 0.01 mm. Station 10 is left out: the name says
-// Drevelboor 57x6 while the field is 700. Station 7 is empty.
+// Diameters from TAB01.DAT (same bytes as MW310 PARAM.zip Param/TAB01.DAT).
+// The diameter column is 0.01 mm. Station 7 and 11 are empty.
+// Station 10's file name says Drevelboor 57x6 but the field is 700 (7.00 mm).
 function boringDiameterMm(station) {
   switch (station) {
   case 1:
@@ -819,6 +824,8 @@ function boringDiameterMm(station) {
     return 4.5;
   case 9:
     return 8;
+  case 10:
+    return 7;
   case 12:
     return 35;
   case 13:
@@ -826,6 +833,20 @@ function boringDiameterMm(station) {
   default:
     return 0;
   }
+}
+
+// Y-arm stations that share Offset.prm X = 50.00 mm. offY is that file's Y
+// in 0.01 mm. Station 11 is empty and is not listed. Assumption, not proven
+// on this mill: a higher offY is a higher program Y, the same sign as X.
+function yArmStations() {
+  return [
+    {station:1, offY:-11063, dia:3},
+    {station:8, offY:-17485, dia:4.5},
+    {station:9, offY:-20675, dia:8},
+    {station:10, offY:-23885, dia:7},
+    {station:12, offY:-30285, dia:35},
+    {station:13, offY:-33485, dia:10}
+  ];
 }
 
 function createGangPlanner(opts) {
@@ -842,7 +863,7 @@ function createGangPlanner(opts) {
 }
 
 function gangPushWarn(warnings, text) {
-  if (warnings.length < 12) {
+  if (warnings.length < 40) {
     warnings.push(text);
   }
 }
@@ -857,8 +878,12 @@ function gangCheckPoint(planner, fmt, x, y, warnings) {
   }
 }
 
-function gangDefine(planner, subset) {
+function gangDefine(planner, subset, mirrorList, kind) {
+  var axis = kind || "X";
   var key = subset.join(",");
+  if (axis == "Y") {
+    key = "Y:" + key;
+  }
   if (planner.groups[key]) {
     return planner.groups[key].n;
   }
@@ -880,13 +905,154 @@ function gangDefine(planner, subset) {
   if (n > 80 + planner.maxGroups) {
     return 0;
   }
+  var mirror = mirrorList;
+  if (!mirror) {
+    mirror = gangMirrorList(subset, planner.stations[0], planner.stations[planner.stations.length - 1]);
+  }
   planner.groups[key] = {
     n: n,
     stations: subset.slice(),
-    mirror: gangMirrorList(subset, planner.stations[0], planner.stations[planner.stations.length - 1])
+    mirror: mirror,
+    kind: axis
   };
   planner.groupOrder.push(key);
   return n;
+}
+
+function yMirrorList(covered) {
+  var arm = yArmStations();
+  var lo = covered[0].offY;
+  var hi = covered[covered.length - 1].offY;
+  var out = [];
+  var i;
+  var j;
+  for (i = 0; i < covered.length; ++i) {
+    var target = lo + hi - covered[i].offY;
+    var found = 0;
+    for (j = 0; j < arm.length; ++j) {
+      if (Math.abs(arm[j].offY - target) <= 20) {
+        found = arm[j].station;
+        break;
+      }
+    }
+    if (!found) {
+      return null;
+    }
+    out.push(found);
+  }
+  return out;
+}
+
+function yCoverCluster(planner, holes, fmt, warnings) {
+  var arm = yArmStations();
+  var remaining = holes.slice();
+  var strokes = [];
+  function diaOf(h) {
+    return boringDiameterMm(h.station);
+  }
+  function progY(h) {
+    return gangProgramY(h.y, fmt);
+  }
+  while (remaining.length) {
+    var best = null;
+    var hi;
+    var si;
+    var sj;
+    var hj;
+    for (hi = 0; hi < remaining.length; ++hi) {
+      var h = remaining[hi];
+      var hd = diaOf(h);
+      for (si = 0; si < arm.length; ++si) {
+        var s = arm[si];
+        if (!gangSame(s.dia, hd, 0.15)) {
+          continue;
+        }
+        var covered = [{hole:h, station:s.station, offY:s.offY}];
+        var used = {};
+        used[hi] = true;
+        for (sj = 0; sj < arm.length; ++sj) {
+          if (sj == si) {
+            continue;
+          }
+          var t = arm[sj];
+          var target = progY(h) + (t.offY - s.offY) / 100;
+          var found = -1;
+          var bestD = 0.05;
+          for (hj = 0; hj < remaining.length; ++hj) {
+            if (used[hj]) {
+              continue;
+            }
+            if (!gangSame(diaOf(remaining[hj]), t.dia, 0.15)) {
+              continue;
+            }
+            var dist = Math.abs(progY(remaining[hj]) - target);
+            if (dist <= 0.05 && dist < bestD) {
+              found = hj;
+              bestD = dist;
+            }
+          }
+          if (found >= 0) {
+            used[found] = true;
+            covered.push({hole:remaining[found], station:t.station, offY:t.offY});
+          }
+        }
+        if (!best || covered.length > best.length) {
+          best = covered;
+        }
+      }
+    }
+    if (best && best.length >= 2) {
+      best.sort(function(a, b) {
+        return a.offY - b.offY;
+      });
+      var subset = [];
+      var bi;
+      for (bi = 0; bi < best.length; ++bi) {
+        subset.push(best[bi].station);
+      }
+      var mirror = yMirrorList(best);
+      var gn = mirror ? gangDefine(planner, subset, mirror, "Y") : 0;
+      if (!mirror) {
+        gangPushWarn(warnings, "Gang: Y stations " + subset.join(",") + " have no mirror on the Y arm; posted as single G100.");
+      }
+      if (!gn && mirror && !planner.limitWarned) {
+        planner.limitWarned = true;
+        warnings.push("Gang: more than " + planner.maxGroups + " spindle groups; extra holes posted as single G100.");
+      }
+      if (!gn) {
+        for (bi = 0; bi < best.length; ++bi) {
+          strokes.push(gangSingleStroke(best[bi].hole));
+        }
+      } else {
+        for (bi = 0; bi < best.length; ++bi) {
+          gangCheckPoint(planner, fmt, best[bi].hole.x, best[bi].hole.y, warnings);
+        }
+        var anchor = best[0].hole;
+        strokes.push({kind:"gang", x:anchor.x, y:anchor.y, z:anchor.z, f:anchor.f, t:gn});
+      }
+      var keep = [];
+      for (hj = 0; hj < remaining.length; ++hj) {
+        var drop = false;
+        for (bi = 0; bi < best.length; ++bi) {
+          if (remaining[hj] == best[bi].hole) {
+            drop = true;
+          }
+        }
+        if (!drop) {
+          keep.push(remaining[hj]);
+        }
+      }
+      remaining = keep;
+    } else {
+      remaining.sort(function(a, b) {
+        return progY(a) - progY(b);
+      });
+      var alone = remaining.shift();
+      gangCheckPoint(planner, fmt, alone.x, alone.y, warnings);
+      strokes.push(gangSingleStroke(alone));
+    }
+  }
+  return strokes;
 }
 
 function gangSingleStroke(h) {
@@ -974,12 +1140,22 @@ function gangGreedyRow(planner, rowHoles, fmt, warnings) {
 function planGangStrokes(planner, holes, fmt) {
   var warnings = [];
   var eligible = [];
+  var yHoles = [];
   var singles = [];
+  var arm = yArmStations();
+  var onYArm = {};
+  var ai;
+  for (ai = 0; ai < arm.length; ++ai) {
+    onYArm[arm[ai].station] = true;
+  }
   var i;
   for (i = 0; i < holes.length; ++i) {
     var h = holes[i];
-    if (fmt.gangEnabled && gangIndexOf(planner.stations, h.station) >= 0) {
+    var enabled = h.gang == null ? fmt.gangEnabled : h.gang;
+    if (enabled && gangIndexOf(planner.stations, h.station) >= 0) {
       eligible.push(h);
+    } else if (enabled && onYArm[h.station]) {
+      yHoles.push(h);
     } else {
       gangCheckPoint(planner, fmt, h.x, h.y, warnings);
       singles.push(gangSingleStroke(h));
@@ -1033,6 +1209,60 @@ function planGangStrokes(planner, holes, fmt) {
       }
     }
   }
+  var yRows = [];
+  var xClusters = gangCluster(yHoles, function(item) {
+    return item.x;
+  }, planner.tol);
+  var xc;
+  for (xc = 0; xc < xClusters.length; ++xc) {
+    var yz = gangCluster(xClusters[xc].items, function(item) {
+      return item.z;
+    }, planner.tol);
+    var yzc;
+    for (yzc = 0; yzc < yz.length; ++yzc) {
+      var yf = gangCluster(yz[yzc].items, function(item) {
+        return item.f;
+      }, 0.001);
+      var yfc;
+      for (yfc = 0; yfc < yf.length; ++yfc) {
+        yRows.push(yf[yfc].items);
+      }
+    }
+  }
+  yRows.sort(function(a, b) {
+    var px = a[0].x - b[0].x;
+    if (Math.abs(px) > planner.tol) {
+      return px;
+    }
+    var py = gangProgramY(a[0].y, fmt) - gangProgramY(b[0].y, fmt);
+    if (Math.abs(py) > planner.tol) {
+      return py;
+    }
+    var pz = a[0].z - b[0].z;
+    if (Math.abs(pz) > planner.tol) {
+      return pz;
+    }
+    return a[0].f - b[0].f;
+  });
+  var yGangs = [];
+  for (r = 0; r < yRows.length; ++r) {
+    var yProduced = yCoverCluster(planner, yRows[r], fmt, warnings);
+    var yp;
+    for (yp = 0; yp < yProduced.length; ++yp) {
+      if (yProduced[yp].kind == "gang") {
+        yGangs.push(yProduced[yp]);
+      } else {
+        loose.push(yProduced[yp]);
+      }
+    }
+  }
+  yGangs.sort(function(a, b) {
+    var py = gangProgramY(a.y, fmt) - gangProgramY(b.y, fmt);
+    if (Math.abs(py) > planner.tol) {
+      return py;
+    }
+    return a.x - b.x;
+  });
   loose.sort(function(a, b) {
     var py = gangProgramY(a.y, fmt) - gangProgramY(b.y, fmt);
     if (Math.abs(py) > planner.tol) {
@@ -1058,7 +1288,7 @@ function planGangStrokes(planner, holes, fmt) {
   fresh.sort(function(a, b) {
     return a.n - b.n;
   });
-  return {strokes:gangs.concat(loose), newGroups:fresh, warnings:warnings};
+  return {strokes:gangs.concat(yGangs).concat(loose), newGroups:fresh, warnings:warnings};
 }
 
 function renderBoringLines(plan, fmt) {
@@ -1068,7 +1298,11 @@ function renderBoringLines(plan, fmt) {
   for (i = 0; i < plan.newGroups.length; ++i) {
     var g = plan.newGroups[i];
     lines.push("#T" + g.n + "=" + g.stations.join(","));
-    lines.push("#X" + g.n + "=" + g.mirror.join(","));
+    if (g.kind == "Y") {
+      lines.push("#Y" + g.n + "=" + g.mirror.join(","));
+    } else {
+      lines.push("#X" + g.n + "=" + g.mirror.join(","));
+    }
     lines.push("#S" + g.n + "=" + g.mirror.join(","));
   }
   for (i = 0; i < plan.strokes.length; ++i) {
@@ -1204,14 +1438,12 @@ function onCyclePoint(x, y, z) {
     y: p.y,
     z: depth,
     f: toMPerMin(cycle.feedrate),
-    station: boringStation
+    station: boringStation,
+    gang: !!getProperty("gangDrilling")
   });
 }
 
 function onCycleEnd() {
-  if (boringSection) {
-    flushBoringHoles();
-  }
 }
 
 function onDwell(seconds) {
@@ -1239,9 +1471,6 @@ function onCommand(command) {
 }
 
 function onSectionEnd() {
-  if (boringSection) {
-    flushBoringHoles();
-  }
   if (radiusCompensation != RADIUS_COMPENSATION_OFF) {
     writeln("G40");
   }
@@ -1251,5 +1480,6 @@ function onSectionEnd() {
 }
 
 function onClose() {
+  flushBoringHoles();
   writeln("%");
 }

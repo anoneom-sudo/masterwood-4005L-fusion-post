@@ -61,8 +61,22 @@ def check(path):
             if 81 <= t <= 89:
                 if t not in tables or "T" not in tables[t]:
                     errs.append("line %d: T%d used but #T%d table not defined before" % (i, t, t)); continue
-                for k, s in enumerate(tables[t]["T"]):
-                    holes.append((x + 32 * (s - tables[t]["T"][0]), yv, z, "T%d/s%d" % (t, s)))
+                # Y arm offsets from Offset.prm, in 0.01 mm. Used only when the
+                # group has #Y and no #X (tablet.PRG shape).
+                y_off = {1: -11063, 8: -17485, 9: -20675, 10: -23885, 12: -30285, 13: -33485}
+                ts = tables[t]["T"]
+                if "Y" in tables[t] and "X" not in tables[t]:
+                    first = ts[0]
+                    if first not in y_off:
+                        errs.append("line %d: Y-gang station %s has no Offset.prm Y" % (i, first)); continue
+                    for s in ts:
+                        if s not in y_off:
+                            errs.append("line %d: Y-gang station %s has no Offset.prm Y" % (i, s)); continue
+                        hy = round(yv + (y_off[s] - y_off[first]) / 100.0, 2)
+                        holes.append((x, hy, z, "T%d/s%d" % (t, s)))
+                else:
+                    for s in ts:
+                        holes.append((x + 32 * (s - ts[0]), yv, z, "T%d/s%d" % (t, s)))
             elif 1 <= t <= 50:
                 holes.append((x, yv, z, "T%d" % t))
             else:

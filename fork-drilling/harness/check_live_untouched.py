@@ -30,7 +30,6 @@ UNTOUCHED = [
     "toPanel",
     "mapSpindleTool",
     "toMPerMin",
-    "onClose",
     "writeBlock",
 ]
 
