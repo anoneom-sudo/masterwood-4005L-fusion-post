@@ -10,6 +10,9 @@
 !samples/*.prg
 !samples/*.PRG
 
+# Drill-fork examples produced by the headless gang test (not the live mill post)
+!fork-drilling/harness/expected/*.prg
+
 # Not for the public repo
 _backup/
 _archive/
